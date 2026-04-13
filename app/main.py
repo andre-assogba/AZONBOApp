@@ -13,6 +13,7 @@ def menu():
         print("3. Enregistrer une vente")
         print("4. Voir les ventes")
         print("5. Generer une facture")
+        print("6. Alertes stock")
         print("0. Quitter")
         choix = input("Votre choix : ")
         if choix == "1":
@@ -42,6 +43,8 @@ def menu():
                 prix = int(input("Prix : "))
                 articles.append({"nom": nom, "quantite": qte, "prix": prix})
             factures.generer_facture(client, articles)
+        elif choix == "6":
+            produits.alertes()
         elif choix == "0":
             break
         else:
