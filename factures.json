@@ -1,0 +1,33 @@
+[
+    {
+        "numero": 1,
+        "date": "12/04/2026 15:42",
+        "client": "Maman Adjoua",
+        "articles": [
+            {
+                "nom": "Savon karit\u00e9",
+                "quantite": 3,
+                "prix": 500
+            },
+            {
+                "nom": "Huile coco",
+                "quantite": 1,
+                "prix": 1200
+            }
+        ],
+        "total": 2700
+    },
+    {
+        "numero": 2,
+        "date": "12/04/2026 16:21",
+        "client": "Andr\u00e9 Marc",
+        "articles": [
+            {
+                "nom": "cahier",
+                "quantite": 4,
+                "prix": 1200
+            }
+        ],
+        "total": 4800
+    }
+]
