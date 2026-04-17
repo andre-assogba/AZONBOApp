@@ -1,39 +1,30 @@
-import json
-FICHIER = "produits.json"
+from db import connecter
+from validation import saisir_texte, saisir_nombre
 
-def charger():
-    try:
-        with open(FICHIER, "r") as f:
-            return json.load(f)
-    except:
-        return []
+def ajouter_produit():
+    nom = saisir_texte('Nom du produit : ')
+    prix = saisir_nombre('Prix unitaire : ')
+    quantite = saisir_nombre('Quantite en stock : ', entier=True)
+    seuil = saisir_nombre('Seuil alerte stock : ', entier=True)
+    conn = connecter()
+    c = conn.cursor()
+    c.execute(
+        'INSERT INTO produits (nom, prix, quantite, seuil) VALUES (?, ?, ?, ?)',
+        (nom, prix, quantite, seuil)
+    )
+    conn.commit()
+    conn.close()
+    print('Produit ajoute avec succes.')
 
-def sauvegarder(produits):
-    with open(FICHIER, "w") as f:
-        json.dump(produits, f)
-
-def ajouter(nom, prix, cout, stock, seuil):
-    produits = charger()
-    produits.append({"nom": nom, "prix": prix, "cout": cout, "stock": stock, "seuil": seuil})
-    sauvegarder(produits)
-    print("Produit ajoute : " + nom)
-
-def afficher():
-    produits = charger()
+def voir_produits():
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT * FROM produits')
+    produits = c.fetchall()
+    conn.close()
     if not produits:
-        print("Aucun produit.")
+        print('Aucun produit enregistre.')
         return
-    print("--- PRODUITS ---")
     for p in produits:
-        alerte = " STOCK BAS" if p["stock"] <= p["seuil"] else ""
-        print(p["nom"] + " | Prix: " + str(p["prix"]) + " | Stock: " + str(p["stock"]) + alerte)
-
-def alertes():
-    produits = charger()
-    bas = [p for p in produits if p["stock"] <= p["seuil"]]
-    if not bas:
-        print("Tous les stocks sont OK.")
-    else:
-        print("ALERTES STOCK:")
-        for p in bas:
-            print(p["nom"] + " : " + str(p["stock"]) + " restant(s)")
+        alerte = ' *** STOCK BAS ***' if p[3] <= p[4] else ''
+        print(f'[{p[0]}] {p[1]} | Prix: {p[2]} FCFA | Stock: {p[3]} | Seuil: {p[4]}{alerte}')
