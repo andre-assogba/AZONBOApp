@@ -1,26 +1,40 @@
 # AZONBOApp
 
-Outil de gestion d activite pour petits entrepreneurs - Benin
+Outil de gestion d activite pour petits commercants et entrepreneurs — Benin 🇧🇯
 
-## Version 1.0 - Fonctionnalites
+## Version actuelle : v1.2 — POO + SQLite
 
-- Gestion des produits
-- Enregistrement des ventes
-- Generation de factures numerotees
-- Alertes de stock automatiques
-- Sauvegarde JSON
+## Fonctionnalites
+
+- Gestion des produits avec alertes stock
+- Ventes multi-articles avec facture automatique
+- Paiement cash, credit et partiel
+- Suivi des dettes clients avec remboursements
+- Resume du jour (ventes, cash, credits)
 
 ## Structure
-
-- apprentissage/ : etapes 01 a 09 du parcours Python
-- app/ : code principal (main.py, produits.py, ventes.py, factures.py)
-
+azonboapp/
+├── app/
+│   ├── main.py        # Menu principal
+│   ├── db.py          # Base de donnees SQLite
+│   ├── produits.py    # Classe Produit
+│   ├── ventes.py      # Classe Vente
+│   ├── credits.py     # Classe Credit
+│   ├── resume.py      # Classe Resume
+│   └── validation.py  # Saisies securisees
+├── apprentissage/     # Etapes 01 a 12 du parcours Python
+└── BACKLOG.md         # Idees post-terrain
 ## Lancement
-
 cd app
 python3 main.py
+## Historique des versions
+
+- v1.0 : Terminal + JSON (etapes 01-10)
+- v1.1 : SQLite + sessions + credits + remboursements
+- v1.2 : Restructuration POO complete
 
 ## Auteur
 
-Andre Marc ASSOGBA - Cotonou, Benin
+Andre Marc ASSOGBA — Cotonou, Benin
 Code depuis un Android Infinix avec Termux
+github.com/Andre-Assogba/AZONBOApp

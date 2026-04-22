@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def saisir_nombre(message, entier=False):
     while True:
         try:
