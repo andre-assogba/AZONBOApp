@@ -20,7 +20,7 @@ azonboapp/
 │   ├── produits.py    # Classe Produit
 │   ├── ventes.py      # Classe Vente
 │   ├── credits.py     # Classe Credit
-│   ├── resume.py      # Classe Resume
+│   ├── resume.py      # Classe Résumé
 │   └── validation.py  # Saisies securisees
 ├── apprentissage/     # Etapes 01 a 12 du parcours Python
 └── BACKLOG.md         # Idees post-terrain
