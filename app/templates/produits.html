@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>📦 Mes produits</h2>
+<button onclick="document.getElementById('f').style.display='block'" class="btn">+ Ajouter un produit</button><div id="f" style="display:none;padding:10px"><form action="/produits/ajouter" method="post">Nom: <input name="nom"><br>Prix: <input name="prix" type="number"><br>Quantite: <input name="qte" type="number"><br>Seuil: <input name="seuil" type="number"><br><button type="submit" class="btn">Enregistrer</button></form></div>
+{% if produits %}
+    {% for p in produits %}
+    <div class="card">
+        <strong>[{{ p[0] }}] {{ p[1] }}</strong><br>
+        Prix : {{ p[2]|int }} FCFA<br>
+        Stock : {{ p[3] }}
+        {% if p[3] == 0 %}
+            <span class="alerte"> RUPTURE</span>
+        {% elif p[3] <= p[4] %}
+            <span class="alerte"> STOCK BAS</span>
+        {% endif %}
+        <br>Seuil : {{ p[4] }}
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">Aucun produit enregistré.</div>
+{% endif %}
+<a href="/" class="btn" style="background:#888;">← Retour</a>
+{% endblock %}

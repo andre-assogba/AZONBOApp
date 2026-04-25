@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Modifier la vente #{{ sid }}</h2>
+<form method="POST">
+  <p><label>Client :</label><br>
+  <input type="text" name="client" value="{{ s[0] }}" required></p>
+  <p><label>Mode de paiement :</label><br>
+  <select name="mode">
+    <option value="cash" {% if s[1]=='cash' %}selected{% endif %}>Cash</option>
+    <option value="credit" {% if s[1]=='credit' %}selected{% endif %}>Crédit</option>
+    <option value="partiel" {% if s[1]=='partiel' %}selected{% endif %}>Partiel</option>
+  </select></p>
+  <button type="submit">✅ Enregistrer</button>
+</form>
+<a href="/ventes">← Retour aux ventes</a>
+{% endblock contenu %}

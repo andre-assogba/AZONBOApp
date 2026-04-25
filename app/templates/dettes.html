@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>💰 Mes dettes</h2>
+<form method="POST" action="/dettes">
+  <input type="text" name="nom" placeholder="Rechercher un client...">
+  <button type="submit">🔍</button>
+</form>
+{% if dettes %}
+    {% for d in dettes %}
+    <div class="card">
+        <strong>[{{ d[0] }}] {{ d[1] }}</strong><br>
+        Initiale : {{ d[2]|int }} FCFA<br>
+        Restant : <span class="alerte">{{ d[3]|int }} FCFA</span><br>
+        Depuis : {{ d[4][:10] }}<br>
+        <a href="/dettes/{{ d[0] }}">Voir détail →</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">Aucune dette en cours.</div>
+{% endif %}
+<a href="/" class="btn" style="background:#888;">🔙 Retour</a>
+{% endblock %}

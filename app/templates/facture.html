@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block contenu %}
+<div class="card" style="text-align:center;">
+    <strong>AZONBOAPP - RECU DE VENTE</strong><br>
+    Facture N° : {{ '%04d'|format(sid) }}<br>
+    Date : {{ s[1] }}<br>
+    Client : {{ s[0] }}
+</div>
+{% for a in articles %}
+<div class="card">
+    {{ a[0] }} x{{ a[1] }} = {{ a[2]|int }} FCFA
+</div>
+{% endfor %}
+<div class="card">
+    <strong>TOTAL : {{ s[2]|int }} FCFA</strong><br>
+    Paiement : {{ s[3] }}<br>
+    {% if s[3] == 'partiel' %}
+    Avance payee : {{ avance }} FCFA<br>
+    <span class="alerte">Reste a payer : {{ reste }} FCFA</span>
+    {% elif s[3] == 'credit' %}
+    <span class="alerte">Reste a payer : {{ s[2]|int }} FCFA</span>
+    {% endif %}
+</div>
+<div class="card" style="text-align:center;">Merci pour votre confiance !</div>
+<a href="/ventes/nouvelle" class="btn">+ Nouvelle vente</a>
+<a href="/" class="btn" style="background:#888;">🔙 Menu</a>
+{% endblock %}

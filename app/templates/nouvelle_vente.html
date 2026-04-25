@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>🛒 Nouvelle vente</h2>
+{% if erreur %}<div class="card alerte">{{ erreur }}</div>{% endif %}
+<form method="post">
+    <div class="card">
+        <label>Nom du client</label><br>
+        <input name="client" placeholder="Nom du client" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
+    </div>
+    <h3>Produits</h3>
+    {% for p in produits %}
+    <div class="card">
+        <strong>{{ p[1] }}</strong> — {{ p[2]|int }} FCFA | Stock: {{ p[3] }}<br>
+        <input name="qte_{{ p[0] }}" type="number" min="0" value="0"
+        data-prix="{{ p[2] }}"
+        onchange="calculerTotal()"
+        style="width:100%;padding:8px;border-radius:8px;border:1px solid #ccc;font-size:16px;margin-top:5px;">
+    </div>
+    {% endfor %}
+    <div class="card" style="text-align:center;">
+        <strong>TOTAL : <span id="total">0</span> FCFA</strong>
+    </div>
+    <div class="card">
+        <label>Paiement</label><br>
+        <select name="mode" id="mode" onchange="toggleAvance()" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
+            <option value="cash">Cash</option>
+            <option value="credit">Credit</option>
+            <option value="partiel">Partiel</option>
+        </select>
+    </div>
+    <div class="card" id="avance_div" style="display:none;">
+        <label>Avance reçue (FCFA)</label><br>
+        <input name="avance" type="number" placeholder="0" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
+    </div>
+    <button type="submit" class="btn">Enregistrer la vente</button>
+</form>
+<a href="/ventes" class="btn" style="background:#888;">🔙 Retour</a>
+<script>
+function calculerTotal(){
+    var total = 0;
+    document.querySelectorAll('input[data-prix]').forEach(function(i){
+        var qte = parseInt(i.value) || 0;
+        var prix = parseFloat(i.getAttribute('data-prix')) || 0;
+        total += qte * prix;
+    });
+    document.getElementById('total').textContent = Math.round(total);
+}
+function toggleAvance(){
+    var m = document.getElementById('mode').value;
+    document.getElementById('avance_div').style.display = m === 'partiel' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

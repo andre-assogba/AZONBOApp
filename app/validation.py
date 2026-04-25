@@ -15,6 +15,8 @@ def saisir_nombre(message, entier=False):
 def saisir_texte(message):
     while True:
         valeur = input(message).strip()
+        if valeur == '0':
+            return None
         if valeur == '':
             print('Erreur : ce champ ne peut pas etre vide.')
             continue

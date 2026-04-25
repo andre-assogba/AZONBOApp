@@ -30,7 +30,14 @@ class Produit:
 
     @staticmethod
     def ajouter():
-        nom = saisir_texte('Nom du produit : ')
+        while True:
+            nom = saisir_texte('Nom du produit : ')
+            if nom is None:
+                print('Ajout annule.')
+                return
+            if len(nom) >= 2 and any(c.isalpha() for c in nom):
+                break
+            print('Erreur : nom invalide.')
         prix = saisir_nombre('Prix unitaire : ')
         qte = saisir_nombre('Quantite en stock : ', entier=True)
         seuil = saisir_nombre('Seuil alerte stock : ', entier=True)
@@ -62,10 +69,20 @@ class Produit:
         if not produits:
             return
         pid = saisir_nombre('ID produit a modifier : ', entier=True)
+        ids = [p.id for p in produits]
+        if pid not in ids:
+            print('Produit introuvable.')
+            return
         print('1. Nom  2. Prix  3. Stock  4. Seuil')
         choix = saisir_nombre('Que modifier : ', entier=True)
         if choix == 1:
             val = saisir_texte('Nouveau nom : ')
+            if val is None:
+                print('Modification annulee.')
+                return
+            if len(val) < 2 or not any(c.isalpha() for c in val):
+                print('Erreur : nom invalide.')
+                return
             champ = 'nom'
         elif choix == 2:
             val = saisir_nombre('Nouveau prix : ')

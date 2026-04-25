@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>🛒 Mes ventes</h2>
+<a href="/ventes/nouvelle" class="btn">+ Nouvelle vente</a>
+{% if sessions %}
+    {% for s in sessions %}
+    <div class="card">
+        <strong>[{{ s[0] }}] {{ s[1] }}</strong><br>
+        Date : {{ s[2][:10] }}<br>
+        Total : {{ s[3]|int }} FCFA<br>
+        Paiement : {{ s[4] }}<br>
+        <a href="/ventes/{{ s[0] }}/modifier">✏️ Modifier</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">Aucune vente enregistrée.</div>
+{% endif %}
+<a href="/" class="btn" style="background:#888;">🔙 Retour</a>
+{% endblock %}
