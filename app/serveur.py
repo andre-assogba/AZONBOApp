@@ -3,7 +3,7 @@
 # Andre Marc ASSOGBA
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from db import initialiser, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente, verifier_utilisateur, get_resume
+from db import initialiser, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente, verifier_utilisateur, get_resume
 from ventes import Vente
 from datetime import datetime
 
