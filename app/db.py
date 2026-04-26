@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import sqlite3
 
 def connecter():
@@ -140,3 +141,21 @@ def modifier_vente(session_id, client, mode):
     c.execute('UPDATE sessions SET client=?, paiement=? WHERE id=?', (client, mode, session_id))
     conn.commit()
     conn.close()
+
+
+def creer_utilisateur(nom, mot_de_passe):
+    conn = connecter()
+    c = conn.cursor()
+    h = hashlib.sha256(mot_de_passe.encode()).hexdigest()
+    c.execute('INSERT INTO utilisateurs (nom, mot_de_passe) VALUES (?,?)', (nom, h))
+    conn.commit()
+    conn.close()
+
+def verifier_utilisateur(nom, mot_de_passe):
+    conn = connecter()
+    c = conn.cursor()
+    h = hashlib.sha256(mot_de_passe.encode()).hexdigest()
+    c.execute('SELECT id FROM utilisateurs WHERE nom=? AND mot_de_passe=?', (nom, h))
+    u = c.fetchone()
+    conn.close()
+    return u is not None

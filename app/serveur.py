@@ -2,12 +2,13 @@
 # AZONBOApp v1.2 - Interface Flask
 # Andre Marc ASSOGBA
 
-from flask import Flask, render_template, request, redirect, url_for
-from db import initialiser, lister_produits, ajouter_produit, lister_sessions, lister_dettes, get_resume, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente
+from flask import Flask, render_template, request, session, redirect, url_for
+from db import initialiser, lister_produits, ajouter_produit, verifier_utilisateur, creer_utilisateur, lister_sessions, lister_dettes, get_resume, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente
 from ventes import Vente
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = 'azonbo_secret_2026'
 initialiser()
 
 @app.route('/')
@@ -161,3 +162,27 @@ def modifier_vente_route(sid):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    erreur = None
+    if request.method == 'POST':
+        nom = request.form['nom']
+        mdp = request.form['mot_de_passe']
+        if verifier_utilisateur(nom, mdp):
+            session['utilisateur'] = nom
+            return redirect(url_for('menu'))
+        else:
+            erreur = 'Nom ou mot de passe incorrect.'
+    return render_template('login.html', erreur=erreur)
+
+@app.route('/logout')
+def logout():
+    session.pop('utilisateur', None)
+    return redirect(url_for('login'))
+
+@app.before_request
+def verifier_connexion():
+    routes_libres = ['login', 'static']
+    if 'utilisateur' not in session and request.endpoint not in routes_libres:
+        return redirect(url_for('login'))
