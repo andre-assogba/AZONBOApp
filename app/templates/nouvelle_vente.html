@@ -11,7 +11,7 @@
     {% for p in produits %}
     <div class="card">
         <strong>{{ p[1] }}</strong> — {{ p[2]|int }} FCFA | Stock: {{ p[3] }}<br>
-        <input name="qte_{{ p[0] }}" type="number" min="0" value="0"
+        <input type="hidden" name="produit_id" value="{{ p[0] }}"><input name="quantite" type="number" min="0" value="0"
         data-prix="{{ p[2] }}"
         onchange="calculerTotal()"
         style="width:100%;padding:8px;border-radius:8px;border:1px solid #ccc;font-size:16px;margin-top:5px;">
