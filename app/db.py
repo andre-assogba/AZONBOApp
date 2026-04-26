@@ -9,21 +9,32 @@ def initialiser():
     conn = connecter()
     c = conn.cursor()
 
+    c.execute('''CREATE TABLE IF NOT EXISTS utilisateurs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom TEXT NOT NULL UNIQUE,
+        mot_de_passe TEXT NOT NULL
+    )''')
+
     c.execute('''CREATE TABLE IF NOT EXISTS produits (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
         nom TEXT NOT NULL,
         prix REAL NOT NULL,
         quantite INTEGER NOT NULL,
-        seuil INTEGER NOT NULL
+        seuil INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES utilisateurs(id)
     )''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
         client TEXT NOT NULL,
         date TEXT NOT NULL,
         total REAL NOT NULL,
-        paiement TEXT NOT NULL
+        paiement TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES utilisateurs(id)
     )''')
+
 
     c.execute('''CREATE TABLE IF NOT EXISTS ventes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,13 +48,14 @@ def initialiser():
 
     c.execute('''CREATE TABLE IF NOT EXISTS credits (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
         session_id INTEGER NOT NULL,
         client TEXT NOT NULL,
-        montant_initial REAL NOT NULL,
+        montant_total REAL NOT NULL,
         montant_restant REAL NOT NULL,
         date TEXT NOT NULL,
         statut TEXT NOT NULL,
-        FOREIGN KEY (session_id) REFERENCES sessions(id)
+        FOREIGN KEY (user_id) REFERENCES utilisateurs(id)
     )''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS remboursements (
@@ -56,93 +68,6 @@ def initialiser():
 
     conn.commit()
     conn.close()
-
-def lister_produits():
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('SELECT id,nom,prix,quantite,seuil FROM produits')
-    p = c.fetchall()
-    conn.close()
-    return p
-
-def ajouter_produit(nom, prix, qte, seuil):
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('INSERT INTO produits (nom,prix,quantite,seuil) VALUES (?,?,?,?)',(nom,prix,qte,seuil))
-    conn.commit()
-    conn.close()
-
-def lister_sessions():
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('SELECT id, client, date, total, paiement FROM sessions ORDER BY id DESC')
-    rows = c.fetchall()
-    conn.close()
-    return rows
-
-def lister_dettes():
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('SELECT id, client, montant_initial, montant_restant, date FROM credits WHERE statut = ? ORDER BY id DESC', ('en_cours',))
-    rows = c.fetchall()
-    conn.close()
-    return rows
-
-def get_resume():
-    conn = connecter()
-    c = conn.cursor()
-    from datetime import datetime
-    today = datetime.now().strftime('%d/%m/%Y')
-    c.execute('SELECT COUNT(*), SUM(total) FROM sessions WHERE date LIKE ?', (today + '%',))
-    ventes = c.fetchone()
-    c.execute('SELECT COUNT(*), SUM(montant_restant) FROM credits WHERE statut = ?', ('en_cours',))
-    dettes = c.fetchone()
-    conn.close()
-    return {
-        'nb_ventes': ventes[0] or 0,
-        'total_ventes': int(ventes[1] or 0),
-        'nb_dettes': dettes[0] or 0,
-        'total_dettes': int(dettes[1] or 0),
-        'date': today
-    }
-
-def get_dette(credit_id):
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('SELECT id, client, montant_initial, montant_restant, date, statut FROM credits WHERE id=?', (credit_id,))
-    dette = c.fetchone()
-    c.execute('SELECT montant, date FROM remboursements WHERE credit_id=? ORDER BY date ASC', (credit_id,))
-    remboursements = c.fetchall()
-    conn.close()
-    return dette, remboursements
-
-def rechercher_dettes(nom):
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('SELECT id, client, montant_initial, montant_restant, date FROM credits WHERE statut = ? AND client LIKE ? ORDER BY id DESC', ('en_cours', '%' + nom + '%'))
-    rows = c.fetchall()
-    conn.close()
-    return rows
-
-def enregistrer_remboursement(credit_id, montant):
-    from datetime import datetime
-    conn = connecter()
-    c = conn.cursor()
-    date = datetime.now().strftime('%d/%m/%Y %H:%M')
-    c.execute('INSERT INTO remboursements (credit_id, montant, date) VALUES (?,?,?)', (credit_id, montant, date))
-    c.execute('UPDATE credits SET montant_restant = montant_restant - ? WHERE id = ?', (montant, credit_id))
-    c.execute('UPDATE credits SET statut = "solde" WHERE id = ? AND montant_restant <= 0', (credit_id,))
-    conn.commit()
-    conn.close()
-
-def modifier_vente(session_id, client, mode):
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('UPDATE sessions SET client=?, paiement=? WHERE id=?', (client, mode, session_id))
-    conn.commit()
-    conn.close()
-
-
 def creer_utilisateur(nom, mot_de_passe):
     conn = connecter()
     c = conn.cursor()
@@ -158,4 +83,108 @@ def verifier_utilisateur(nom, mot_de_passe):
     c.execute('SELECT id FROM utilisateurs WHERE nom=? AND mot_de_passe=?', (nom, h))
     u = c.fetchone()
     conn.close()
-    return u is not None
+    return u[0] if u else None
+
+def get_user_id(nom):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom,))
+    u = c.fetchone()
+    conn.close()
+    return u[0] if u else None
+def lister_produits(user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id,nom,prix,quantite,seuil FROM produits WHERE user_id=?', (user_id,))
+    p = c.fetchall()
+    conn.close()
+    return p
+
+def ajouter_produit(user_id, nom, prix, qte, seuil):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('INSERT INTO produits (user_id,nom,prix,quantite,seuil) VALUES (?,?,?,?,?)', (user_id, nom, prix, qte, seuil))
+    conn.commit()
+    conn.close()
+
+def get_produit(produit_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id,nom,prix,quantite,seuil FROM produits WHERE id=?', (produit_id,))
+    p = c.fetchone()
+    conn.close()
+    return p
+def creer_session(user_id, client, date, total, paiement):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('INSERT INTO sessions (user_id,client,date,total,paiement) VALUES (?,?,?,?,?)', (user_id, client, date, total, paiement))
+    sid = c.lastrowid
+    conn.commit()
+    conn.close()
+    return sid
+
+def ajouter_vente(session_id, produit_id, quantite, total):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('INSERT INTO ventes (session_id,produit_id,quantite,total) VALUES (?,?,?,?)', (session_id, produit_id, quantite, total))
+    c.execute('UPDATE produits SET quantite=quantite-? WHERE id=?', (quantite, produit_id))
+    conn.commit()
+    conn.close()
+
+def lister_sessions(user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id,client,date,total,paiement FROM sessions WHERE user_id=? ORDER BY id DESC', (user_id,))
+    rows = c.fetchall()
+    conn.close()
+    return rows
+def lister_dettes(user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id,client,montant_total,montant_restant,date,statut FROM credits WHERE user_id=? AND statut="en_cours" ORDER BY id DESC', (user_id,))
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+def get_dette(credit_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id,client,montant_total,montant_restant,date,statut FROM credits WHERE id=?', (credit_id,))
+    d = c.fetchone()
+    conn.close()
+    return d
+
+def rechercher_dettes(user_id, nom_client):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id,client,montant_total,montant_restant,date,statut FROM credits WHERE user_id=? AND client LIKE ?', (user_id, '%'+nom_client+'%'))
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+def enregistrer_remboursement(credit_id, montant):
+    from datetime import datetime
+    conn = connecter()
+    c = conn.cursor()
+    date = datetime.now().strftime('%d/%m/%Y %H:%M')
+    c.execute('INSERT INTO remboursements (credit_id,montant,date) VALUES (?,?,?)', (credit_id, montant, date))
+    c.execute('UPDATE credits SET montant_restant=montant_restant-? WHERE id=?', (montant, credit_id))
+    c.execute('UPDATE credits SET statut="solde" WHERE id=? AND montant_restant<=0', (credit_id,))
+    conn.commit()
+    conn.close()
+def get_resume(user_id, date):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT COUNT(*), SUM(total) FROM sessions WHERE user_id=? AND date LIKE ?', (user_id, date+'%'))
+    ventes = c.fetchone()
+    c.execute('SELECT COUNT(*), SUM(montant_restant) FROM credits WHERE user_id=? AND statut="en_cours"', (user_id,))
+    dettes = c.fetchone()
+    conn.close()
+    return ventes, dettes
+
+def modifier_vente(session_id, client, mode):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('UPDATE sessions SET client=?, paiement=? WHERE id=?', (client, mode, session_id))
+    conn.commit()
+    conn.close()
