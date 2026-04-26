@@ -124,7 +124,7 @@ def rembourser(cid):
 def facture(sid):
     s = lister_sessions(uid())
     session_data = next((x for x in s if x[0] == sid), None)
-    return render_template('facture.html', session=session_data)
+    return render_template('facture.html', session=session_data, sid=sid)
 
 @app.route('/ventes/<int:sid>/modifier', methods=['GET', 'POST'])
 def modifier_vente_route(sid):
