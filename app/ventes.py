@@ -3,15 +3,25 @@ from db import connecter
 from validation import saisir_texte, saisir_nombre
 from datetime import datetime
 
-class Vente:
-    def __init__(self, client, date, articles, total, mode, avance):
-        self.client = client
-        self.date = date
-        self.articles = articles
-        self.total = total
-        self.mode = mode
-        self.avance = avance
+# -*- coding: utf-8 -*-
+from db import connecter
+from validation import saisir_texte, saisir_nombre
+from datetime import datetime
 
+class Vente:
+    def __init__(self, client, mode, date='', articles=None, total=0, avance=0):
+        self.client = client
+        self.mode = mode
+        self.date = date
+        self.articles = articles or []
+        self.total = total
+        self.avance = avance
+        self.produits = []
+
+    def ajouter_produit(self, pid, nom, prix, qte):
+        sous_total = prix * qte
+        self.total += sous_total
+        self.produits.append({'id': pid, 'nom': nom, 'prix': prix, 'quantite': qte, 'total': sous_total})
     def afficher_facture(self, session_id):
         print('=' * 40)
         print('     AZONBOAPP - RECU DE VENTE')
