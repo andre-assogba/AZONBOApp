@@ -18,6 +18,13 @@
                 border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .alerte { color: red; font-weight: bold; }
     </style>
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#2e7d32">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/service-worker.js');
+    }
+  </script>
 </head>
 <body>
     <div class="header">
