@@ -16,7 +16,7 @@ def uid():
 
 @app.before_request
 def verifier_connexion():
-    routes_libres = ['login', 'static']
+    routes_libres = ['login', 'static', 'inscription']
     if 'utilisateur' not in session and request.endpoint not in routes_libres:
         return redirect(url_for('login'))
 
