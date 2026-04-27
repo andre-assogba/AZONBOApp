@@ -137,5 +137,20 @@ def modifier_vente_route(sid):
     session_data = next((x for x in s if x[0] == sid), None)
     return render_template('modifier_vente.html', sid=sid, s=session_data)
 
+
+@app.route('/inscription', methods=['GET','POST'])
+def inscription():
+    if request.method == 'POST':
+        nom = request.form.get('nom')
+        mdp = request.form.get('mdp')
+        if not nom or not mdp:
+            return render_template('inscription.html', erreur='Remplissez tous les champs')
+        from db import s_inscrire
+        ok = s_inscrire(nom, mdp)
+        if ok:
+            return redirect('/login')
+        return render_template('inscription.html', erreur='Nom deja pris')
+    return render_template('inscription.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
