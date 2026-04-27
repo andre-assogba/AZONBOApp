@@ -142,7 +142,7 @@ def modifier_vente_route(sid):
 def inscription():
     if request.method == 'POST':
         nom = request.form.get('nom')
-        mdp = request.form.get('mdp')
+        mdp = request.form.get('mot_de_passe')
         if not nom or not mdp:
             return render_template('inscription.html', erreur='Remplissez tous les champs')
         from db import s_inscrire
