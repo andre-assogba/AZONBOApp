@@ -83,7 +83,7 @@ def nouvelle_vente():
             ajouter_vente(sid, item['id'], item['quantite'], item['total'])
         if v.mode == 'credit':
             from db import ajouter_dette
-            ajouter_dette(uid(), v.client, v.total, date)
+            ajouter_dette(uid(), sid, v.client, v.total, date)
         return redirect(url_for('facture', sid=sid))
     return render_template('nouvelle_vente.html', produits=produits, erreur=None)
 

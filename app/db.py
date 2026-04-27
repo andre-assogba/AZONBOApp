@@ -209,12 +209,12 @@ def s_inscrire(nom, mdp):
     return True
 
 
-def ajouter_dette(user_id, client, montant, date):
+def ajouter_dette(user_id, session_id, client, montant, date):
     conn = connecter()
     c = conn.cursor()
     c.execute(
-        "INSERT INTO credits (user_id, client, montant_total, montant_restant, date, statut) VALUES (?, ?, ?, ?, ?, ?)",
-        (user_id, client, montant, montant, date, 'en_cours')
+        "INSERT INTO credits (user_id, session_id, client, montant_total, montant_restant, date, statut) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (user_id, session_id, client, montant, montant, date, 'en_cours')
     )
     conn.commit()
     conn.close()
