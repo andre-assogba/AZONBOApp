@@ -213,7 +213,7 @@ def ajouter_dette(user_id, client, montant, date):
     conn = connecter()
     c = conn.cursor()
     c.execute(
-        "INSERT INTO credits (user_id, client, montant_initial, montant_restant, date, statut) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO credits (user_id, client, montant_total, montant_restant, date, statut) VALUES (?, ?, ?, ?, ?, ?)",
         (user_id, client, montant, montant, date, 'en_cours')
     )
     conn.commit()
