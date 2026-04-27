@@ -103,7 +103,12 @@ def lister_produits(user_id):
 def ajouter_produit(user_id, nom, prix, qte, seuil):
     conn = connecter()
     c = conn.cursor()
-    c.execute('INSERT INTO produits (user_id,nom,prix,quantite,seuil) VALUES (?,?,?,?,?)', (user_id, nom, prix, qte, seuil))
+    c.execute('SELECT id,quantite FROM produits WHERE user_id=? AND nom=?', (user_id, nom))
+    ex = c.fetchone()
+    if ex:
+        c.execute('UPDATE produits SET quantite=?, prix=?, seuil=? WHERE id=?', (ex[1]+qte, prix, seuil, ex[0]))
+    else:
+        c.execute('INSERT INTO produits (user_id,nom,prix,quantite,seuil) VALUES (?,?,?,?,?)', (user_id, nom, prix, qte, seuil))
     conn.commit()
     conn.close()
 
