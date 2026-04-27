@@ -193,3 +193,17 @@ def modifier_vente(session_id, client, mode):
     c.execute('UPDATE sessions SET client=?, paiement=? WHERE id=?', (client, mode, session_id))
     conn.commit()
     conn.close()
+
+def s_inscrire(nom, mdp):
+    import hashlib
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom,))
+    if c.fetchone():
+        conn.close()
+        return False
+    mdp_hash = hashlib.sha256(mdp.encode()).hexdigest()
+    c.execute('INSERT INTO utilisateurs (nom, mot_de_passe) VALUES (?,?)', (nom, mdp_hash))
+    conn.commit()
+    conn.close()
+    return True
