@@ -261,7 +261,7 @@ def modifier_quantites_vente(session_id, articles):
     conn.commit()
     conn.close()
 
-def historique_client(nom, user_id):
+def historique_client(nom):
     conn = connecter()
     c = conn.cursor()
     c.execute('''SELECT s.id, s.date, s.total, s.paiement,
