@@ -230,3 +230,12 @@ def get_articles_session(session_id):
     rows = c.fetchall()
     conn.close()
     return rows
+
+
+def get_credit_session(session_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT montant_total, montant_restant FROM credits WHERE session_id=?', (session_id,))
+    row = c.fetchone()
+    conn.close()
+    return row

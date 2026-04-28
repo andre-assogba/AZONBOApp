@@ -3,7 +3,7 @@
 # Andre Marc ASSOGBA
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from db import initialiser, get_articles_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente, verifier_utilisateur, get_resume
+from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente, verifier_utilisateur, get_resume
 from ventes import Vente
 from datetime import datetime
 
@@ -128,7 +128,8 @@ def facture(sid):
     s = lister_sessions(uid())
     session_data = next((x for x in s if x[0] == sid), None)
     articles = get_articles_session(sid)
-    return render_template('facture.html', s=session_data, sid=sid, articles=articles)
+    credit = get_credit_session(sid)
+    return render_template('facture.html', s=session_data, sid=sid, articles=articles, credit=credit)
 
 @app.route('/ventes/<int:sid>/modifier', methods=['GET', 'POST'])
 def modifier_vente_route(sid):
