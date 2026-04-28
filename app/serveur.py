@@ -85,7 +85,7 @@ def nouvelle_vente():
             from db import ajouter_dette
             avance = int(request.form.get('avance', 0))
             reste = v.total - avance
-            ajouter_dette(uid(), sid, v.client, reste, date)
+            ajouter_dette(uid(), sid, v.client, v.total, date, reste)
         return redirect(url_for('facture', sid=sid))
     return render_template('nouvelle_vente.html', produits=produits, erreur=None)
 
