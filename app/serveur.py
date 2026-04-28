@@ -140,7 +140,7 @@ def modifier_vente_route(sid):
         client = request.form['client']
         mode = request.form['paiement']
         modifier_vente(sid, client, mode)
-        articles_form = [(int(k.split('_')[1]), int(v)) for k, v in request.form.items() if k.startswith('qte_') and int(v) > 0]
+        articles_form = [(int(k.split('_')[1]), int(v)) for k, v in request.form.items() if k.startswith('qte_') and v.strip() != '' and int(v) > 0]
         modifier_quantites_vente(sid, articles_form)
         return redirect(url_for('ventes'))
     s = lister_sessions(uid())
