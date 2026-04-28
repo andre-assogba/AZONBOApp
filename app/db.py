@@ -218,3 +218,15 @@ def ajouter_dette(user_id, session_id, client, montant, date):
     )
     conn.commit()
     conn.close()
+
+
+def get_articles_session(session_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute(
+        'SELECT p.nom, v.quantite, v.total FROM ventes v JOIN produits p ON v.produit_id=p.id WHERE v.session_id=?',
+        (session_id,)
+    )
+    rows = c.fetchall()
+    conn.close()
+    return rows
