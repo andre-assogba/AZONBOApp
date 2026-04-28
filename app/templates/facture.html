@@ -6,13 +6,13 @@
     Date : {{ s[2] }}<br>
     Client : {{ s[1] }}
 </div>
-{% for a in articles %}
+{% for a in articles %}{% if a[1] > 0 %}
 <div class="card">{{ a[0] }} x{{ a[1] }} = {{ a[2]|int }} FCFA</div>
-{% endfor %}
+{% endif %}{% endfor %}
 <div class="card">
     <strong>TOTAL : {{ s[3]|int }} FCFA</strong><br>
     Paiement : {{ s[4] }}<br>
-    {% if s[4] == "credit" %}
+    {% if s[4] == "credit" or s[4] == "partiel" %}
     <span class="alerte">Reste a payer : {{ s[3]|int }} FCFA</span>
     {% endif %}
 </div>
