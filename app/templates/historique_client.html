@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Historique client</h2>
+<form method="POST">
+  <p><input type="text" name="nom" value="{{ nom }}" placeholder="Nom du client" required>
+  <button type="submit">🔍 Rechercher</button></p>
+</form>
+{% if nom and not resultats %}
+  <p>Aucune vente trouvée pour {{ nom }}.</p>
+{% endif %}
+{% if resultats %}
+  <h3>Ventes de {{ nom }}</h3>
+  {% for sid, v in resultats.items() %}
+    <p><strong>Vente #{{ sid }}</strong> — {{ v.date }} — {{ v.paiement }}</p>
+    <ul>
+    {% for a in v.articles %}
+      <li>{{ a.nom }} x{{ a.qte }} → {{ a.total }} FCFA</li>
+    {% endfor %}
+    </ul>
+    <p>Total : <strong>{{ v.total }} FCFA</strong></p>
+    <hr>
+  {% endfor %}
+{% endif %}
+<a href="/menu">↩ Retour au menu</a>
+{% endblock contenu %}

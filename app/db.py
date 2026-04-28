@@ -260,3 +260,17 @@ def modifier_quantites_vente(session_id, articles):
     c.execute('UPDATE sessions SET total=? WHERE id=?', (nouveau_total, session_id))
     conn.commit()
     conn.close()
+
+def historique_client(nom, user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('''SELECT s.id, s.date, s.total, s.paiement,
+        p.nom, v.quantite, v.total
+        FROM sessions s
+        JOIN ventes v ON v.session_id = s.id
+        JOIN produits p ON p.id = v.produit_id
+        WHERE s.client=?
+        ORDER BY s.id DESC''', (nom,))
+    rows = c.fetchall()
+    conn.close()
+    return rows

@@ -164,5 +164,24 @@ def inscription():
         return render_template('inscription.html', erreur='Nom deja pris')
     return render_template('inscription.html')
 
+
+@app.route('/historique_client', methods=['GET', 'POST'])
+def historique_client_route():
+    from db import historique_client
+    resultats = []
+    nom = ''
+    if request.method == 'POST':
+        nom = request.form.get('nom', '')
+        if nom:
+            rows = historique_client(nom)
+            ventes = {}
+            for r in rows:
+                sid = r[0]
+                if sid not in ventes:
+                    ventes[sid] = {'date': r[1], 'total': r[2], 'paiement': r[3], 'articles': []}
+                ventes[sid]['articles'].append({'nom': r[4], 'qte': r[5], 'total': r[6]})
+            resultats = ventes
+    return render_template('historique_client.html', resultats=resultats, nom=nom)
+
 if __name__ == '__main__':
     app.run(debug=True)
