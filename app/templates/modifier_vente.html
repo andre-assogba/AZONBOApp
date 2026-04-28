@@ -6,14 +6,14 @@
   <input type="text" name="client" value="{{ s[1] }}" required></p>
   <p><label>Mode de paiement :</label><br>
   <select name="paiement">
-    <option value="cash" {% if s[4]=='cash' %}selected{% endif %}>Cash</option>
-    <option value="credit" {% if s[4]=='credit' %}selected{% endif %}>Crédit</option>
-    <option value="partiel" {% if s[4]=='partiel' %}selected{% endif %}>Partiel</option>
+    <option value="cash" {% if s[4]=="cash" %}selected{% endif %}>Cash</option>
+    <option value="credit" {% if s[4]=="credit" %}selected{% endif %}>Credit</option>
+    <option value="partiel" {% if s[4]=="partiel" %}selected{% endif %}>Partiel</option>
   </select></p>
   <p><strong>Articles :</strong></p>
-  {% for produit_id, quantite in articles %}
-  <p>Produit #{{ produit_id }} :
-  <input type="number" name="qte_{{ produit_id }}" value="{{ quantite }}" min="1" required></p>
+  {% for p in produits %}
+  <p>{{ p[1] }} ({{ p[2] }} FCFA) :
+  <input type="number" name="qte_{{ p[0] }}" value="{{ quantites.get(p[0], 0) }}" min="0"></p>
   {% endfor %}
   <button type="submit">✅ Enregistrer</button>
 </form>

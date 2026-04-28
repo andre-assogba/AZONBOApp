@@ -140,12 +140,14 @@ def modifier_vente_route(sid):
         client = request.form['client']
         mode = request.form['paiement']
         modifier_vente(sid, client, mode)
-        articles_form = [(int(k.split('_')[1]), int(v)) for k, v in request.form.items() if k.startswith('qte_')]
+        articles_form = [(int(k.split('_')[1]), int(v)) for k, v in request.form.items() if k.startswith('qte_') and int(v) > 0]
         modifier_quantites_vente(sid, articles_form)
         return redirect(url_for('ventes'))
     s = lister_sessions(uid())
     session_data = next((x for x in s if x[0] == sid), None)
-    return render_template('modifier_vente.html', sid=sid, s=session_data, articles=articles)
+    produits = lister_produits(uid())
+    quantites = {a[0]: a[1] for a in articles}
+    return render_template('modifier_vente.html', sid=sid, s=session_data, produits=produits, quantites=quantites)
 
 
 @app.route('/inscription', methods=['GET','POST'])
