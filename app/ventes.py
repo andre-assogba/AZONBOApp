@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from db import connecter
-from validation import saisir_texte, saisir_nombre
+
 from datetime import datetime
 
 # -*- coding: utf-8 -*-
 from db import connecter
-from validation import saisir_texte, saisir_nombre
+
 from datetime import datetime
 
 class Vente:
@@ -70,7 +70,7 @@ class Vente:
     @staticmethod
     def modifier():
         from db import connecter
-        from validation import saisir_nombre, saisir_menu
+        
         conn = connecter()
         c = conn.cursor()
         c.execute('SELECT id,client,date,total,paiement FROM sessions ORDER BY id DESC LIMIT 10')
