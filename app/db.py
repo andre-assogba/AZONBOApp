@@ -239,3 +239,23 @@ def get_credit_session(session_id):
     row = c.fetchone()
     conn.close()
     return row
+
+def get_articles_session(session_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT produit_id, quantite FROM ventes WHERE session_id=?', (session_id,))
+    articles = c.fetchall()
+    conn.close()
+    return articles
+
+def modifier_quantites_vente(session_id, articles):
+    conn = connecter()
+    c = conn.cursor()
+    for produit_id, quantite in articles:
+        prix = c.execute('SELECT prix FROM produits WHERE id=?', (produit_id,)).fetchone()[0]
+        total = prix * quantite
+        c.execute('UPDATE ventes SET quantite=?, total=? WHERE session_id=? AND produit_id=?', (quantite, total, session_id, produit_id))
+    nouveau_total = c.execute('SELECT SUM(total) FROM ventes WHERE session_id=?', (session_id,)).fetchone()[0]
+    c.execute('UPDATE sessions SET total=? WHERE id=?', (nouveau_total, session_id))
+    conn.commit()
+    conn.close()

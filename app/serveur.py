@@ -3,7 +3,7 @@
 # Andre Marc ASSOGBA
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente, verifier_utilisateur, get_resume
+from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume
 from ventes import Vente
 from datetime import datetime
 
@@ -135,14 +135,17 @@ def facture(sid):
 
 @app.route('/ventes/<int:sid>/modifier', methods=['GET', 'POST'])
 def modifier_vente_route(sid):
+    articles = get_articles_session(sid)
     if request.method == 'POST':
         client = request.form['client']
         mode = request.form['paiement']
         modifier_vente(sid, client, mode)
+        articles_form = [(int(k.split('_')[1]), int(v)) for k, v in request.form.items() if k.startswith('qte_')]
+        modifier_quantites_vente(sid, articles_form)
         return redirect(url_for('ventes'))
     s = lister_sessions(uid())
     session_data = next((x for x in s if x[0] == sid), None)
-    return render_template('modifier_vente.html', sid=sid, s=session_data)
+    return render_template('modifier_vente.html', sid=sid, s=session_data, articles=articles)
 
 
 @app.route('/inscription', methods=['GET','POST'])

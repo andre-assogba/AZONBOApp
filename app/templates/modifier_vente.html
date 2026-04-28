@@ -10,7 +10,12 @@
     <option value="credit" {% if s[4]=='credit' %}selected{% endif %}>Crédit</option>
     <option value="partiel" {% if s[4]=='partiel' %}selected{% endif %}>Partiel</option>
   </select></p>
+  <p><strong>Articles :</strong></p>
+  {% for produit_id, quantite in articles %}
+  <p>Produit #{{ produit_id }} :
+  <input type="number" name="qte_{{ produit_id }}" value="{{ quantite }}" min="1" required></p>
+  {% endfor %}
   <button type="submit">✅ Enregistrer</button>
 </form>
-<a href="/ventes">← Retour aux ventes</a>
+<a href="/ventes">↩ Retour aux ventes</a>
 {% endblock contenu %}
