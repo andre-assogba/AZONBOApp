@@ -50,11 +50,17 @@ def produits():
 
 @app.route('/produits/ajouter', methods=['POST'])
 def ajouter_produit_route():
-    nom = request.form['nom']
-    prix = float(request.form['prix'])
-    qte = int(request.form['quantite'])
-    seuil = int(request.form['seuil'])
-    ajouter_produit(uid(), nom, prix, qte, seuil)
+    from validation import valider_produit
+    ok, resultat = valider_produit(
+        request.form.get('nom',''),
+        request.form.get('prix',''),
+        request.form.get('quantite',''),
+        request.form.get('seuil','')
+    )
+    if not ok:
+        p = lister_produits(uid())
+        return render_template('produits.html', produits=p, erreur=resultat)
+    ajouter_produit(uid(), resultat['nom'], resultat['prix'], resultat['qte'], resultat['seuil'])
     return redirect(url_for('produits'))
 
 @app.route('/ventes')

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block contenu %}
 <h2>📦 Mes produits</h2>
+{% if erreur %}<p style="color:red;font-weight:bold;">{{ erreur }}</p>{% endif %}
 <button onclick="document.getElementById('f').style.display='block'" class="btn">+ Ajouter un produit</button><div id="f" style="display:none;padding:10px"><form action="/produits/ajouter" method="post">Nom: <input name="nom"><br>Prix: <input name="prix" type="number"><br>Quantite: <input name="quantite" type="number"><br>Seuil: <input name="seuil" type="number"><br><button type="submit" class="btn">Enregistrer</button></form></div>
 {% if produits %}
     {% for p in produits %}
