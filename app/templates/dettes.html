@@ -9,8 +9,8 @@
     {% for d in dettes %}
     <div class="card">
         <strong>[{{ d[0] }}] {{ d[1] }}</strong><br>
-        Initiale : {{ d[2]|int }} FCFA<br>
-        Restant : <span class="alerte">{{ d[3]|int }} FCFA</span><br>
+        Montant initial : {{ d[2]|int }} FCFA<br>
+        Reste à payer : <span class="alerte">{{ d[3]|int }} FCFA</span><br>
         Depuis : {{ d[4][:10] }}<br>
         <a href="/dettes/{{ d[0] }}">Voir détail →</a>
     </div>
