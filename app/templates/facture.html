@@ -11,7 +11,7 @@
 {% endfor %}
 <div class="card">
     <strong>TOTAL : {{ s[3]|int }} FCFA</strong><br>
-    Paiement : {{ s[4] }}
+    Paiement : {{ s[4] }}<br>
     {% if s[4] == "credit" %}
     <span class="alerte">Reste a payer : {{ s[3]|int }} FCFA</span>
     {% endif %}
