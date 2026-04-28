@@ -81,9 +81,11 @@ def nouvelle_vente():
         sid = creer_session(uid(), v.client, date, v.total, v.mode)
         for item in v.produits:
             ajouter_vente(sid, item['id'], item['quantite'], item['total'])
-        if v.mode == 'credit':
+        if v.mode in ('credit', 'partiel'):
             from db import ajouter_dette
-            ajouter_dette(uid(), sid, v.client, v.total, date)
+            avance = int(request.form.get('avance', 0))
+            reste = v.total - avance
+            ajouter_dette(uid(), sid, v.client, reste, date)
         return redirect(url_for('facture', sid=sid))
     return render_template('nouvelle_vente.html', produits=produits, erreur=None)
 
