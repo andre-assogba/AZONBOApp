@@ -89,7 +89,7 @@ def nouvelle_vente():
             ajouter_vente(sid, item['id'], item['quantite'], item['total'])
         if v.mode in ('credit', 'partiel'):
             from db import ajouter_dette
-            avance = int(request.form.get('avance', 0))
+            avance = int(request.form.get('avance') or 0)
             reste = v.total - avance
             ajouter_dette(uid(), sid, v.client, v.total, date, reste)
         return redirect(url_for('facture', sid=sid))
