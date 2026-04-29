@@ -240,15 +240,6 @@ def get_credit_session(session_id):
     conn.close()
     return row
 
-def get_articles_session(session_id):
-    conn = connecter()
-    c = conn.cursor()
-    c.execute('SELECT produit_id, quantite FROM ventes WHERE session_id=?', (session_id,))
-    articles = c.fetchall()
-    conn.close()
-    return articles
-
-def modifier_quantites_vente(session_id, articles):
     conn = connecter()
     c = conn.cursor()
     c.execute('DELETE FROM ventes WHERE session_id=?', (session_id,))
@@ -274,3 +265,20 @@ def historique_client(nom):
     rows = c.fetchall()
     conn.close()
     return rows
+
+def modifier_quantites_vente(session_id, articles):
+    conn = connecter()
+    c = conn.cursor()
+    anciens = c.execute('SELECT produit_id, quantite FROM ventes WHERE session_id=?', (session_id,)).fetchall()
+    for produit_id, qte in anciens:
+        c.execute('UPDATE produits SET quantite=quantite+? WHERE id=?', (qte, produit_id))
+    c.execute('DELETE FROM ventes WHERE session_id=?', (session_id,))
+    for produit_id, quantite in articles:
+        prix = c.execute('SELECT prix FROM produits WHERE id=?', (produit_id,)).fetchone()[0]
+        total = prix * quantite
+        c.execute('INSERT INTO ventes (session_id,produit_id,quantite,total) VALUES (?,?,?,?)', (session_id, produit_id, quantite, total))
+        c.execute('UPDATE produits SET quantite=quantite-? WHERE id=?', (quantite, produit_id))
+    nouveau_total = c.execute('SELECT SUM(total) FROM ventes WHERE session_id=?', (session_id,)).fetchone()[0]
+    c.execute('UPDATE sessions SET total=? WHERE id=?', (nouveau_total, session_id))
+    conn.commit()
+    conn.close()
