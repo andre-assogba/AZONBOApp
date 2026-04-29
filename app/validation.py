@@ -24,6 +24,8 @@ def valider_produit(nom, prix_str, qte_str, seuil_str):
         return False, 'Le nom du produit est obligatoire.'
     if len(nom) > MAX_NOM:
         return False, 'Le nom est trop long (max 100 caracteres).'
+    if not any(c.isalpha() for c in nom):
+        return False, 'Le nom doit contenir au moins une lettre.'
     if contient_injection(nom):
         return False, 'Le nom contient des caracteres non autorises.'
     if not prix_str or not qte_str or not seuil_str:
@@ -60,6 +62,8 @@ def valider_client(nom):
         return False, 'Le nom du client est obligatoire.'
     if len(nom) > MAX_NOM:
         return False, 'Le nom est trop long (max 100 caracteres).'
+    if not any(c.isalpha() for c in nom):
+        return False, 'Le nom doit contenir au moins une lettre.'
     if contient_injection(nom):
         return False, 'Le nom contient des caracteres non autorises.'
     return True, nom
@@ -114,6 +118,8 @@ def valider_inscription(nom, mdp):
         return False, 'Le nom est obligatoire.'
     if len(nom) > MAX_NOM:
         return False, 'Le nom est trop long.'
+    if not any(c.isalpha() for c in nom):
+        return False, 'Le nom doit contenir au moins une lettre.'
     if contient_injection(nom):
         return False, 'Le nom contient des caracteres non autorises.'
     if not mdp:
