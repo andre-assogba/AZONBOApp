@@ -3,7 +3,7 @@
 # Andre Marc ASSOGBA
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume
+from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, lister_remboursements, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume
 from ventes import Vente
 from datetime import datetime
 
@@ -123,7 +123,8 @@ def dettes():
 @app.route('/dettes/<int:cid>')
 def dette_detail(cid):
     d = get_dette(cid)
-    return render_template('dette_detail.html', dette=d)
+    r = lister_remboursements(cid)
+    return render_template('dette_detail.html', dette=d, remboursements=r)
 
 @app.route('/dettes/<int:cid>/rembourser', methods=['POST'])
 def rembourser(cid):

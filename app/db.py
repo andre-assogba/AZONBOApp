@@ -282,3 +282,11 @@ def modifier_quantites_vente(session_id, articles):
     c.execute('UPDATE sessions SET total=? WHERE id=?', (nouveau_total, session_id))
     conn.commit()
     conn.close()
+
+def lister_remboursements(credit_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT montant, date FROM remboursements WHERE credit_id=? ORDER BY date', (credit_id,))
+    rows = c.fetchall()
+    conn.close()
+    return rows
