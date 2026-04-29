@@ -13,13 +13,12 @@
   {% for sid, v in resultats.items() %}
     <p><strong>Vente #{{ sid }}</strong> — {{ v.date }} — {{ v.paiement }}</p>
     <ul>
-    {% for a in v.articles %}
+    {% for a in v.articles %}{% if a.qte > 0 %}
       <li>{{ a.nom }} x{{ a.qte }} → {{ a.total }} FCFA</li>
-    {% endfor %}
+    {% endif %}{% endfor %}
     </ul>
     <p>Total : <strong>{{ v.total }} FCFA</strong></p>
     <hr>
   {% endfor %}
-{% endif %}
 <a href="/">↩ Retour au menu</a>
 {% endblock contenu %}
