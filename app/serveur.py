@@ -73,6 +73,9 @@ def nouvelle_vente():
     produits = lister_produits(uid())
     if request.method == 'POST':
         client = request.form.get('client', 'Client')
+        client = client.strip()
+        if not client:
+            return render_template('nouvelle_vente.html', produits=produits, erreur='Nom client invalide.')
         mode = request.form.get('paiement', 'cash')
         produits_sel = request.form.getlist('produit_id')
         quantites = request.form.getlist('quantite')
@@ -99,6 +102,8 @@ def nouvelle_vente():
 def resume():
     date = datetime.now().strftime('%d/%m/%Y')
     ventes, dettes = get_resume(uid(), date)
+    ventes = (ventes[0], int(ventes[1] or 0))
+    dettes = (dettes[0], int(dettes[1] or 0))
     return render_template('resume.html', date=date, ventes=ventes, dettes=dettes)
 
 @app.route('/historique', methods=['GET', 'POST'])
