@@ -3,15 +3,15 @@
 <h2>Détails de la dette</h2>
 <p><strong>Client :</strong> {{ dette[1] }}</p>
 <p><strong>Date :</strong> {{ dette[4] }}</p>
-<p><strong>Montant initial :</strong> {{ dette[2] }} FCFA</p>
-<p><strong>Reste à payer :</strong> {{ dette[3] }} FCFA</p>
-<p><strong>Statut :</strong> {{ dette[5] }}</p>
+<p><strong>Montant initial :</strong> {{ dette[2]|int }} FCFA</p>
+<p><strong>Reste à payer :</strong> {{ dette[3]|int }} FCFA</p>
+<p><strong>Statut :</strong> {{ dette[5]|replace("en_cours", "En cours")|replace("solde", "Soldé") }}</p>
 
 <h3>Remboursements</h3>
 {% if remboursements %}
   <ul>
   {% for r in remboursements %}
-    <li>{{ r[1] }} — {{ r[0] }} FCFA</li>
+    <li>{{ r[1] }} — {{ r[0]|int }} FCFA</li>
   {% endfor %}
   </ul>
 {% else %}
