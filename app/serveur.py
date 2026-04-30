@@ -8,7 +8,8 @@ from ventes import Vente
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'azonbo_secret_2026'
+import os
+app.secret_key = os.environ.get('SECRET_KEY', 'azonbo_secret_2026')
 initialiser()
 
 def uid():
