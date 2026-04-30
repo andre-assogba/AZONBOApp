@@ -49,7 +49,7 @@ def login():
             session['tentatives'] = tentatives
             if tentatives >= 5:
                 session['blocage'] = (datetime.now() + timedelta(minutes=15)).isoformat()
-                erreur = 'Trop de tentatives. Compte bloque 15 minutes.'
+                erreur = 'Trop de tentatives. Reessayez dans 15 minutes.'
             else:
                 erreur = f'Nom ou mot de passe incorrect. Tentative {tentatives}/5.'
     return render_template('login.html', erreur=erreur)
