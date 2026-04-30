@@ -252,7 +252,7 @@ def get_credit_session(session_id):
     conn.commit()
     conn.close()
 
-def historique_client(nom):
+def historique_client(nom, user_id):
     conn = connecter()
     c = conn.cursor()
     c.execute('''SELECT s.id, s.date, s.total, s.paiement,
@@ -260,8 +260,8 @@ def historique_client(nom):
         FROM sessions s
         JOIN ventes v ON v.session_id = s.id
         JOIN produits p ON p.id = v.produit_id
-        WHERE s.client=?
-        ORDER BY s.id DESC''', (nom,))
+        WHERE s.client=? AND s.user_id=?
+        ORDER BY s.id DESC''', (nom, user_id))
     rows = c.fetchall()
     conn.close()
     return rows
