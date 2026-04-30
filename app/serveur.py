@@ -105,7 +105,8 @@ def nouvelle_vente():
         for pid, qte in zip(produits_sel, quantites):
             p = get_produit(int(pid))
             if p:
-                v.ajouter_produit(p[0], p[1], p[2], int(qte))
+                if qte and qte.strip():
+                    v.ajouter_produit(p[0], p[1], p[2], int(qte))
         date = datetime.now().strftime('%d/%m/%Y %H:%M')
         sid = creer_session(uid(), v.client, date, v.total, v.mode)
         for item in v.produits:
