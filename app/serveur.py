@@ -54,6 +54,10 @@ def login():
                 erreur = f'Nom ou mot de passe incorrect. Tentative {tentatives}/5.'
     return render_template('login.html', erreur=erreur)
 
+@app.route('/offline')
+def offline():
+    return render_template('offline.html')
+
 @app.route('/logout')
 def logout():
     session.pop('utilisateur', None)

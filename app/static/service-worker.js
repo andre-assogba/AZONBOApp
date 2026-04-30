@@ -1,5 +1,6 @@
 const CACHE = 'azonbo-v2';
 const URLS = [
+  '/offline',
   '/',
   '/produits',
   '/ventes/nouvelle',
@@ -32,6 +33,6 @@ self.addEventListener('fetch', e => {
         caches.open(CACHE).then(c => c.put(e.request, clone));
         return res;
       })
-      .catch(() => caches.match(e.request))
+      .catch(() => caches.match(e.request) || caches.match('/offline'))
   );
 });
