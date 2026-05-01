@@ -72,7 +72,7 @@ def creer_utilisateur(nom, mot_de_passe):
     conn = connecter()
     c = conn.cursor()
     h = hashlib.sha256(mot_de_passe.encode()).hexdigest()
-    c.execute('INSERT INTO utilisateurs (nom, mot_de_passe) VALUES (?,?)', (nom, h))
+    c.execute('INSERT INTO utilisateurs (nom, mot_de_passe) VALUES (?,?)', (nom.strip(), h))
     conn.commit()
     conn.close()
 
@@ -88,7 +88,7 @@ def verifier_utilisateur(nom, mot_de_passe):
 def get_user_id(nom):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom.strip(),))
+    c.execute('SELECT id FROM utilisateurs WHERE TRIM(nom)=?', (nom.strip(),))
     u = c.fetchone()
     conn.close()
     return u[0] if u else None
@@ -198,12 +198,12 @@ def s_inscrire(nom, mdp):
     import hashlib
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom.strip(),))
+    c.execute('SELECT id FROM utilisateurs WHERE TRIM(nom)=?', (nom.strip(),))
     if c.fetchone():
         conn.close()
         return False
     mdp_hash = hashlib.sha256(mdp.encode()).hexdigest()
-    c.execute('INSERT INTO utilisateurs (nom, mot_de_passe) VALUES (?,?)', (nom, mdp_hash))
+    c.execute('INSERT INTO utilisateurs (nom, mot_de_passe) VALUES (?,?)', (nom.strip(), mdp_hash))
     conn.commit()
     conn.close()
     return True
