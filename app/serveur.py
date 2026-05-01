@@ -203,7 +203,7 @@ def inscription():
         from db import s_inscrire
         ok = s_inscrire(nom, mdp)
         if ok:
-            return redirect('/login')
+            return redirect('/login?inscrit=1')
         return render_template('inscription.html', erreur='Nom deja pris')
     return render_template('inscription.html')
 

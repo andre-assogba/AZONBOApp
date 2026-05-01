@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block contenu %}
 <h2>🔐 Connexion</h2>
+{% if request.args.get('inscrit') %}
+<div class='card' style='border-left:4px solid #2e7d32;background:#e8f5e9;'><p style='color:#2e7d32;margin:0;font-weight:bold;'>✅ Inscription reussie ! Connectez-vous.</p></div>
+{% endif %}
 {% if erreur %}
 <div class='card' style='border-left:4px solid #c0392b;background:#fdecea;'><p style='color:#c0392b;margin:0;font-weight:bold;'>⚠️ {{ erreur }}</p></div>
 {% endif %}
