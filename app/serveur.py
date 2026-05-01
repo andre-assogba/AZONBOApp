@@ -216,7 +216,7 @@ def historique_client_route():
     if request.method == 'POST':
         nom = request.form.get('nom', '')
         if nom:
-            rows = historique_client(nom, uid())
+            rows = historique_client('%' + nom + '%', uid())
             ventes = {}
             for r in rows:
                 sid = r[0]
