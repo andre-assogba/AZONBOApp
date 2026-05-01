@@ -1,10 +1,33 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block contenu %}
-<h2>Menu principal</h2>
-<a href="/produits" class="btn">📦 Mes produits</a>
-<a href="/ventes/nouvelle" class="btn">🛒 Nouvelle vente</a>
-<a href="/dettes" class="btn">💰 Mes dettes</a>
-<a href="/resume" class="btn">📊 Résumé du jour</a>
-<a href="/historique_client" class="btn">👤 Historique client</a>
-<a href="/logout" class="btn" style="background:#c0392b;">🚪 Déconnexion</a>
+<div style='background:#1B6B2F;color:white;padding:12px 15px;margin:-15px -15px 15px;'>
+  <div style='font-size:13px;opacity:0.8;'>Bonjour, {{ nom }} 👋</div>
+  <div style='font-size:12px;opacity:0.7;'>{{ date }}</div>
+</div>
+
+<div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;'>
+  <div class='card' style='text-align:center;padding:12px;'>
+    <div style='font-size:11px;color:#666;'>🛒 Ventes aujourd'hui</div>
+    <div style='font-size:24px;font-weight:bold;color:#1B6B2F;'>{{ ventes[0] }}</div>
+    <div style='font-size:13px;color:#333;'>{{ ventes[1] }} FCFA</div>
+  </div>
+  <div class='card' style='text-align:center;padding:12px;'>
+    <div style='font-size:11px;color:#666;'>💰 Dettes en cours</div>
+    <div style='font-size:24px;font-weight:bold;color:#c0392b;'>{{ dettes[0] }}</div>
+    <div style='font-size:13px;color:#c0392b;'>{{ dettes[1] }} FCFA</div>
+  </div>
+</div>
+
+<a href='/ventes/nouvelle' class='btn' style='font-size:20px;padding:20px;background:#1B6B2F;margin-bottom:15px;'>
+  🛒 NOUVELLE VENTE
+</a>
+
+<div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;'>
+  <a href='/produits' class='btn' style='background:#2980b9;'>📦 Produits</a>
+  <a href='/dettes' class='btn' style='background:#8e44ad;'>💳 Dettes</a>
+  <a href='/historique_client' class='btn' style='background:#16a085;'>👥 Clients</a>
+  <a href='/resume' class='btn' style='background:#d35400;'>📊 Rapports</a>
+</div>
+
+<a href='/logout' class='btn' style='background:#c0392b;margin-top:15px;'>🚪 Déconnexion</a>
 {% endblock %}

@@ -65,7 +65,13 @@ def logout():
 
 @app.route('/')
 def menu():
-    return render_template('menu.html')
+    from datetime import datetime
+    date = datetime.now().strftime('%d/%m/%Y')
+    ventes, dettes = get_resume(uid(), date)
+    ventes = (ventes[0], int(ventes[1] or 0))
+    dettes = (dettes[0], int(dettes[1] or 0))
+    nom = session.get('utilisateur', '')
+    return render_template('menu.html', ventes=ventes, dettes=dettes, nom=nom, date=date)
 
 @app.route('/produits')
 def produits():
