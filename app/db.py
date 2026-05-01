@@ -88,7 +88,7 @@ def verifier_utilisateur(nom, mot_de_passe):
 def get_user_id(nom):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom,))
+    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom.strip(),))
     u = c.fetchone()
     conn.close()
     return u[0] if u else None
@@ -198,7 +198,7 @@ def s_inscrire(nom, mdp):
     import hashlib
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom,))
+    c.execute('SELECT id FROM utilisateurs WHERE nom=?', (nom.strip(),))
     if c.fetchone():
         conn.close()
         return False
