@@ -80,7 +80,7 @@ def verifier_utilisateur(nom, mot_de_passe):
     conn = connecter()
     c = conn.cursor()
     h = hashlib.sha256(mot_de_passe.encode()).hexdigest()
-    c.execute('SELECT id FROM utilisateurs WHERE nom=? AND mot_de_passe=?', (nom, h))
+    c.execute('SELECT id FROM utilisateurs WHERE TRIM(nom)=? AND mot_de_passe=?', (nom.strip(), h))
     u = c.fetchone()
     conn.close()
     return u[0] if u else None
