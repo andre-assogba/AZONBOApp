@@ -162,7 +162,7 @@ def get_dette(credit_id):
 def rechercher_dettes(user_id, nom_client):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id,client,montant_total,montant_restant,date,statut FROM credits WHERE user_id=? AND client LIKE ?', (user_id, '%'+nom_client+'%'))
+    c.execute('SELECT id,client,montant_total,montant_restant,date,statut FROM credits WHERE user_id=? AND statut="en_cours" AND client LIKE ? ORDER BY id DESC', (user_id, '%'+nom_client+'%'))
     rows = c.fetchall()
     conn.close()
     return rows

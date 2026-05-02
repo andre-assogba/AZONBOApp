@@ -163,12 +163,17 @@ def historique():
 @app.route('/dettes', methods=['GET', 'POST'])
 def dettes():
     client = ''
+    recherche = False
     if request.method == 'POST':
-        client = request.form.get('client', '')
-        liste = rechercher_dettes(uid(), client)
+        client = request.form.get('nom', '').strip()
+        if client:
+            liste = rechercher_dettes(uid(), client)
+            recherche = True
+        else:
+            liste = lister_dettes(uid())
     else:
         liste = lister_dettes(uid())
-    return render_template('dettes.html', dettes=liste, client=client)
+    return render_template('dettes.html', dettes=liste, client=client, recherche=recherche)
 
 @app.route('/dettes/<int:cid>')
 def dette_detail(cid):
