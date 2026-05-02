@@ -257,11 +257,14 @@ def historique_client_route():
         if nom:
             rows = historique_client('%' + nom + '%', uid())
             ventes = {}
+            vrai_nom = nom
             for r in rows:
                 sid = r[0]
                 if sid not in ventes:
-                    ventes[sid] = {'date': r[1], 'total': r[2], 'paiement': r[3], 'articles': []}
+                    ventes[sid] = {'date': r[1], 'total': r[2], 'paiement': r[3], 'articles': [], 'client': r[7] if len(r) > 7 else nom}
                 ventes[sid]['articles'].append({'nom': r[4], 'qte': r[5], 'total': r[6]})
+            if rows:
+                nom = rows[0][7]
             resultats = ventes
     return render_template('historique_client.html', resultats=resultats, nom=nom)
 

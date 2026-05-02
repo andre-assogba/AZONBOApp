@@ -256,7 +256,7 @@ def historique_client(nom, user_id):
     conn = connecter()
     c = conn.cursor()
     c.execute('''SELECT s.id, s.date, s.total, s.paiement,
-        p.nom, v.quantite, v.total
+        p.nom, v.quantite, v.total, s.client
         FROM sessions s
         JOIN ventes v ON v.session_id = s.id
         JOIN produits p ON p.id = v.produit_id
