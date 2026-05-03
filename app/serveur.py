@@ -71,7 +71,7 @@ def logout():
 def menu():
     from datetime import datetime
     date = datetime.now().strftime('%d/%m/%Y')
-    ventes, dettes = get_resume, modifier_produit, supprimer_produit(uid(), date)
+    ventes, dettes = get_resume(uid(), date)
     ventes = (ventes[0], int(ventes[1] or 0))
     dettes = (dettes[0], int(dettes[1] or 0))
     nom = session.get('utilisateur', '')
@@ -146,7 +146,7 @@ def nouvelle_vente():
 @app.route('/resume')
 def resume():
     date = datetime.now().strftime('%d/%m/%Y')
-    ventes, dettes = get_resume, modifier_produit, supprimer_produit(uid(), date)
+    ventes, dettes = get_resume(uid(), date)
     ventes = (ventes[0], int(ventes[1] or 0))
     dettes = (dettes[0], int(dettes[1] or 0))
     return render_template('resume.html', date=date, ventes=ventes, dettes=dettes)
