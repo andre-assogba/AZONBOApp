@@ -123,12 +123,6 @@ def get_produit(produit_id):
     p = c.fetchone()
     conn.close()
     return p
-        conn2 = connecter()
-    conn2.execute('ALTER TABLE produits ADD COLUMN prix_achat REAL DEFAULT 0')
-    conn2.commit()
-    conn2.close()
-    except:
-        pass
 
 def modifier_produit(pid, nom, prix, prix_achat, qte, seuil):
     conn = connecter()
