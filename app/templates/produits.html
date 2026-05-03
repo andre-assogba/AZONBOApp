@@ -7,7 +7,7 @@
 <form action="/produits/ajouter" method="post">
 Nom: <input name="nom"><br>
 Prix vente (FCFA): <input name="prix" type="number"><br>
-Prix achat (FCFA): <input name="prix_achat" type="number" value="0"><br>
+Prix d'achat (FCFA): <input name="prix_achat" type="number" value="0"><br>
 Quantite: <input name="quantite" type="number"><br>
 Seuil: <input name="seuil" type="number"><br>
 <button type="submit" class="btn">Enregistrer</button>
@@ -19,7 +19,7 @@ Seuil: <input name="seuil" type="number"><br>
 <div class="card">
 <strong>[{{ p[0] }}] {{ p[1] }}</strong><br>
 Prix vente : {{ p[2]|int }} FCFA<br>
-Prix achat : {{ p[5]|int if p[5] else 0 }} FCFA<br>
+Prix d'achat : {{ p[5]|int if p[5] else 0 }} FCFA<br>
 Benefice : <strong>{{ (p[2] - (p[5] or 0))|int }} FCFA/unite</strong><br>
 Stock : {{ p[3] }}
 {% if p[3] == 0 %}<span class="alerte"> RUPTURE</span>
@@ -34,7 +34,7 @@ Seuil : {{ p[4] }}<br><br>
 <form action="/produits/{{ p[0] }}/modifier" method="post">
 Nom: <input name="nom" value="{{ p[1] }}"><br>
 Prix vente: <input name="prix" type="number" value="{{ p[2]|int }}"><br>
-Prix achat: <input name="prix_achat" type="number" value="{{ p[5]|int if p[5] else 0 }}"><br>
+Prix d'achat: <input name="prix_achat" type="number" value="{{ p[5]|int if p[5] else 0 }}"><br>
 Quantite: <input name="quantite" type="number" value="{{ p[3] }}"><br>
 Seuil: <input name="seuil" type="number" value="{{ p[4] }}"><br>
 <button type="submit" class="btn">💾 Sauvegarder</button>
