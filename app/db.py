@@ -95,7 +95,7 @@ def get_user_id(nom):
 def lister_produits(user_id):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id,nom,prix,quantite,seuil FROM produits WHERE user_id=?', (user_id,))
+    c.execute('SELECT id,nom,prix,quantite,seuil,prix_achat FROM produits WHERE user_id=?', (user_id,))
     p = c.fetchall()
     conn.close()
     return p
@@ -115,10 +115,24 @@ def ajouter_produit(user_id, nom, prix, qte, seuil):
 def get_produit(produit_id):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id,nom,prix,quantite,seuil FROM produits WHERE id=?', (produit_id,))
+    c.execute('SELECT id,nom,prix,quantite,seuil,prix_achat FROM produits WHERE id=?', (produit_id,))
     p = c.fetchone()
     conn.close()
     return p
+def modifier_produit(pid, nom, prix, prix_achat, qte, seuil):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute("UPDATE produits SET nom=?,prix=?,prix_achat=?,quantite=?,seuil=? WHERE id=?", (nom, prix, prix_achat, qte, seuil, pid))
+    conn.commit()
+    conn.close()
+
+def supprimer_produit(pid, user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute("DELETE FROM produits WHERE id=? AND user_id=?", (pid, user_id))
+    conn.commit()
+    conn.close()
+
 def creer_session(user_id, client, date, total, paiement):
     conn = connecter()
     c = conn.cursor()

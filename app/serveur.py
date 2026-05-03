@@ -3,7 +3,7 @@
 # Andre Marc ASSOGBA
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, lister_remboursements, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume
+from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, lister_remboursements, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume, modifier_produit, supprimer_produit
 from ventes import Vente
 from validation import valider_login, valider_inscription, valider_client, valider_paiement, valider_quantite_vente, valider_remboursement, valider_modification_vente
 from datetime import datetime
@@ -71,7 +71,7 @@ def logout():
 def menu():
     from datetime import datetime
     date = datetime.now().strftime('%d/%m/%Y')
-    ventes, dettes = get_resume(uid(), date)
+    ventes, dettes = get_resume, modifier_produit, supprimer_produit(uid(), date)
     ventes = (ventes[0], int(ventes[1] or 0))
     dettes = (dettes[0], int(dettes[1] or 0))
     nom = session.get('utilisateur', '')
@@ -146,7 +146,7 @@ def nouvelle_vente():
 @app.route('/resume')
 def resume():
     date = datetime.now().strftime('%d/%m/%Y')
-    ventes, dettes = get_resume(uid(), date)
+    ventes, dettes = get_resume, modifier_produit, supprimer_produit(uid(), date)
     ventes = (ventes[0], int(ventes[1] or 0))
     dettes = (dettes[0], int(dettes[1] or 0))
     return render_template('resume.html', date=date, ventes=ventes, dettes=dettes)
@@ -230,6 +230,22 @@ def modifier_vente_route(sid):
     quantites = {a[0]: a[1] for a in articles}
     return render_template('modifier_vente.html', sid=sid, s=session_data, produits=produits, quantites=quantites)
 
+
+@app.route('/produits/<int:pid>/modifier', methods=['POST'])
+def modifier_produit_route(pid):
+    from validation import valider_produit
+    prix_achat = float(request.form.get('prix_achat', 0) or 0)
+    ok, resultat = valider_produit(request.form.get('nom',''), request.form.get('prix',''), request.form.get('quantite',''), request.form.get('seuil',''))
+    if not ok:
+        p = lister_produits(uid())
+        return render_template('produits.html', produits=p, erreur=resultat)
+    modifier_produit(pid, resultat['nom'], resultat['prix'], prix_achat, resultat['qte'], resultat['seuil'])
+    return redirect(url_for('produits'))
+
+@app.route('/produits/<int:pid>/supprimer', methods=['POST'])
+def supprimer_produit_route(pid):
+    supprimer_produit(pid, uid())
+    return redirect(url_for('produits'))
 
 @app.route('/inscription', methods=['GET','POST'])
 def inscription():

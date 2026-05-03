@@ -2,23 +2,49 @@
 {% block contenu %}
 <h2>📦 Mes produits</h2>
 {% if erreur %}<p style="color:red;font-weight:bold;">{{ erreur }}</p>{% endif %}
-<button onclick="document.getElementById('f').style.display='block'" class="btn">+ Ajouter un produit</button><div id="f" style="display:none;padding:10px"><form action="/produits/ajouter" method="post">Nom: <input name="nom"><br>Prix: <input name="prix" type="number"><br>Quantite: <input name="quantite" type="number"><br>Seuil: <input name="seuil" type="number"><br><button type="submit" class="btn">Enregistrer</button></form></div>
+<button onclick="document.getElementById('f-ajout').style.display='block'" class="btn">+ Ajouter</button>
+<div id="f-ajout" style="display:none;padding:10px">
+<form action="/produits/ajouter" method="post">
+Nom: <input name="nom"><br>
+Prix vente (FCFA): <input name="prix" type="number"><br>
+Prix achat (FCFA): <input name="prix_achat" type="number" value="0"><br>
+Quantite: <input name="quantite" type="number"><br>
+Seuil: <input name="seuil" type="number"><br>
+<button type="submit" class="btn">Enregistrer</button>
+<button type="button" onclick="document.getElementById('f-ajout').style.display='none'" class="btn" style="background:#888;">Annuler</button>
+</form>
+</div>
 {% if produits %}
-    {% for p in produits %}
-    <div class="card">
-        <strong>[{{ p[0] }}] {{ p[1] }}</strong><br>
-        Prix : {{ p[2]|int }} FCFA<br>
-        Stock : {{ p[3] }}
-        {% if p[3] == 0 %}
-            <span class="alerte"> RUPTURE</span>
-        {% elif p[3] <= p[4] %}
-            <span class="alerte"> STOCK BAS</span>
-        {% endif %}
-        <br>Seuil : {{ p[4] }}
-    </div>
-    {% endfor %}
+{% for p in produits %}
+<div class="card">
+<strong>[{{ p[0] }}] {{ p[1] }}</strong><br>
+Prix vente : {{ p[2]|int }} FCFA<br>
+Prix achat : {{ p[5]|int if p[5] else 0 }} FCFA<br>
+Benefice : <strong>{{ (p[2] - (p[5] or 0))|int }} FCFA/unite</strong><br>
+Stock : {{ p[3] }}
+{% if p[3] == 0 %}<span class="alerte"> RUPTURE</span>
+{% elif p[3] <= p[4] %}<span class="alerte"> STOCK BAS</span>
+{% endif %}<br>
+Seuil : {{ p[4] }}<br><br>
+<button onclick="document.getElementById('mod-{{ p[0] }}').style.display='block'" class="btn" style="background:#f0a500;">✏ Modifier</button>
+<form action="/produits/{{ p[0] }}/supprimer" method="post" style="display:inline" onsubmit="return confirm('Supprimer ce produit ?');">
+<button type="submit" class="btn" style="background:#c0392b;">🗑 Supprimer</button>
+</form>
+<div id="mod-{{ p[0] }}" style="display:none;margin-top:8px;padding:8px;background:#f9f9f9;">
+<form action="/produits/{{ p[0] }}/modifier" method="post">
+Nom: <input name="nom" value="{{ p[1] }}"><br>
+Prix vente: <input name="prix" type="number" value="{{ p[2]|int }}"><br>
+Prix achat: <input name="prix_achat" type="number" value="{{ p[5]|int if p[5] else 0 }}"><br>
+Quantite: <input name="quantite" type="number" value="{{ p[3] }}"><br>
+Seuil: <input name="seuil" type="number" value="{{ p[4] }}"><br>
+<button type="submit" class="btn">💾 Sauvegarder</button>
+<button type="button" onclick="document.getElementById('mod-{{ p[0] }}').style.display='none'" class="btn" style="background:#888;">Annuler</button>
+</form>
+</div>
+</div>
+{% endfor %}
 {% else %}
-    <div class="card">Aucun produit enregistré.</div>
+<div class="card">Aucun produit enregistre.</div>
 {% endif %}
 <a href="/" class="btn" style="background:#888;">← Retour</a>
 {% endblock %}
