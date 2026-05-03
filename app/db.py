@@ -247,7 +247,7 @@ def get_articles_session(session_id):
     conn = connecter()
     c = conn.cursor()
     c.execute(
-        'SELECT p.nom, v.quantite, v.total FROM ventes v JOIN produits p ON v.produit_id=p.id WHERE v.session_id=?',
+        'SELECT p.nom, v.quantite, v.total, v.produit_id FROM ventes v JOIN produits p ON v.produit_id=p.id WHERE v.session_id=?',
         (session_id,)
     )
     rows = c.fetchall()
