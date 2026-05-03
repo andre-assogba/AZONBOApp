@@ -71,6 +71,10 @@ def initialiser():
     except:
         pass
     conn.commit()
+    try:
+        c.execute('ALTER TABLE credits ADD COLUMN telephone TEXT DEFAULT ""')
+    except:
+        pass
     conn.close()
 def creer_utilisateur(nom, mot_de_passe):
     conn = connecter()
@@ -165,7 +169,7 @@ def lister_sessions(user_id):
 def lister_dettes(user_id):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id,client,montant_total,montant_restant,date,statut FROM credits WHERE user_id=? AND statut="en_cours" ORDER BY id DESC', (user_id,))
+    c.execute('SELECT id,client,montant_total,montant_restant,date,statut,telephone FROM credits WHERE user_id=? AND statut="en_cours" ORDER BY id DESC', (user_id,))
     rows = c.fetchall()
     conn.close()
     return rows
@@ -173,7 +177,7 @@ def lister_dettes(user_id):
 def get_dette(credit_id):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id,client,montant_total,montant_restant,date,statut FROM credits WHERE id=?', (credit_id,))
+    c.execute('SELECT id,client,montant_total,montant_restant,date,statut,telephone FROM credits WHERE id=?', (credit_id,))
     d = c.fetchone()
     conn.close()
     return d
@@ -232,12 +236,12 @@ def s_inscrire(nom, mdp):
     return True
 
 
-def ajouter_dette(user_id, session_id, client, montant, date, montant_restant=None):
+def ajouter_dette(user_id, session_id, client, montant, date, montant_restant=None, telephone=""):
     conn = connecter()
     c = conn.cursor()
     c.execute(
-        "INSERT INTO credits (user_id, session_id, client, montant_total, montant_restant, date, statut) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        (user_id, session_id, client, montant, montant_restant if montant_restant is not None else montant, date, 'en_cours')
+        "INSERT INTO credits (user_id, session_id, client, montant_total, montant_restant, date, statut, telephone) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (user_id, session_id, client, montant, montant_restant if montant_restant is not None else montant, date, 'en_cours', telephone)
     )
     conn.commit()
     conn.close()

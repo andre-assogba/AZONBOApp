@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block contenu %}
 <h2>Détails de la dette</h2>
-<p><strong>Client :</strong> {{ dette[1] }}</p>
+<p><strong>Client :</strong> {{ dette[1] }}{% if dette[6] %} — 📞 <a href="tel:{{ dette[6] }}">{{ dette[6] }}</a>{% endif %}</p>
 <p><strong>Date :</strong> {{ dette[4] }}</p>
 <p><strong>Montant initial :</strong> {{ dette[2]|int }} FCFA</p>
 <p><strong>Reste à payer :</strong> {{ dette[3]|int }} FCFA</p>

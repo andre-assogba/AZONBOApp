@@ -8,7 +8,7 @@
 {% if dettes %}
     {% for d in dettes %}
     <div class="card">
-        <strong>[{{ d[0] }}] {{ d[1] }}</strong><br>
+        <strong>[{{ d[0] }}] {{ d[1] }}</strong>{% if d[6] %} — 📞 <a href="tel:{{ d[6] }}">{{ d[6] }}</a>{% endif %}<br>
         Montant initial : {{ d[2]|int }} FCFA<br>
         Reste à payer : <span class="alerte">{{ d[3]|int }} FCFA</span><br>
         Depuis : {{ d[4][:10] }}<br>
