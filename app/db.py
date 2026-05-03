@@ -66,6 +66,10 @@ def initialiser():
         FOREIGN KEY (credit_id) REFERENCES credits(id)
     )''')
 
+    try:
+        c.execute("ALTER TABLE produits ADD COLUMN prix_achat REAL DEFAULT 0")
+    except:
+        pass
     conn.commit()
     conn.close()
 def creer_utilisateur(nom, mot_de_passe):
@@ -119,8 +123,10 @@ def get_produit(produit_id):
     p = c.fetchone()
     conn.close()
     return p
-try:
-        connecter().execute('ALTER TABLE produits ADD COLUMN prix_achat REAL DEFAULT 0')
+        conn2 = connecter()
+    conn2.execute('ALTER TABLE produits ADD COLUMN prix_achat REAL DEFAULT 0')
+    conn2.commit()
+    conn2.close()
     except:
         pass
 
@@ -194,6 +200,10 @@ def enregistrer_remboursement(credit_id, montant):
     c.execute('INSERT INTO remboursements (credit_id,montant,date) VALUES (?,?,?)', (credit_id, montant, date))
     c.execute('UPDATE credits SET montant_restant=montant_restant-? WHERE id=?', (montant, credit_id))
     c.execute('UPDATE credits SET statut="solde" WHERE id=? AND montant_restant<=0', (credit_id,))
+    try:
+        c.execute("ALTER TABLE produits ADD COLUMN prix_achat REAL DEFAULT 0")
+    except:
+        pass
     conn.commit()
     conn.close()
 def get_resume(user_id, date):
