@@ -168,7 +168,7 @@ def ajouter_vente(session_id, produit_id, quantite, total):
 def lister_sessions(user_id):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id,client,date,total,paiement FROM sessions WHERE user_id=? ORDER BY id DESC', (user_id,))
+    c.execute('SELECT id,client,date,total,paiement,statut FROM sessions WHERE user_id=? ORDER BY id DESC', (user_id,))
     rows = c.fetchall()
     conn.close()
     return rows
@@ -293,7 +293,7 @@ def historique_client(nom, user_id):
     conn = connecter()
     c = conn.cursor()
     c.execute('''SELECT s.id, s.date, s.total, s.paiement,
-        p.nom, v.quantite, v.total, s.client
+        p.nom, v.quantite, v.total, s.client, s.statut
         FROM sessions s
         JOIN ventes v ON v.session_id = s.id
         JOIN produits p ON p.id = v.produit_id

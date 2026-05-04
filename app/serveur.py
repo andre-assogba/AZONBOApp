@@ -277,7 +277,7 @@ def historique_client_route():
             for r in rows:
                 sid = r[0]
                 if sid not in ventes:
-                    ventes[sid] = {'date': r[1], 'total': r[2], 'paiement': r[3], 'articles': [], 'client': r[7] if len(r) > 7 else nom}
+                    ventes[sid] = {'date': r[1], 'total': r[2], 'paiement': r[3], 'articles': [], 'client': r[7] if len(r) > 7 else nom, 'statut': r[8] if len(r) > 8 else 'active'}
                 ventes[sid]['articles'].append({'nom': r[4], 'qte': r[5], 'total': r[6]})
             if rows:
                 nom = rows[0][7]
