@@ -3,7 +3,9 @@ import hashlib
 import sqlite3
 
 def connecter():
-    return sqlite3.connect('azonbo.db')
+    conn = sqlite3.connect('azonbo.db', timeout=30)
+    conn.execute('PRAGMA journal_mode=WAL')
+    return conn
 
 def initialiser():
     conn = connecter()
@@ -240,7 +242,7 @@ def ajouter_dette(user_id, session_id, client, montant, date, montant_restant=No
     conn = connecter()
     c = conn.cursor()
     c.execute(
-        "INSERT INTO credits (user_id, session_id, client, montant_total, montant_restant, date, statut, telephone) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO credits (user_id, session_id, client, montant_total, montant_restant, date, statut, telephone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         (user_id, session_id, client, montant, montant_restant if montant_restant is not None else montant, date, 'en_cours', telephone)
     )
     conn.commit()
