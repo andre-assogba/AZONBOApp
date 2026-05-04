@@ -168,7 +168,7 @@ def ajouter_vente(session_id, produit_id, quantite, total):
 def lister_sessions(user_id):
     conn = connecter()
     c = conn.cursor()
-    c.execute('SELECT id,client,date,total,paiement,statut FROM sessions WHERE user_id=? ORDER BY id DESC', (user_id,))
+    c.execute('SELECT s.id,s.client,s.date,s.total,s.paiement,s.statut,c.montant_total,c.montant_restant FROM sessions s LEFT JOIN credits c ON c.session_id=s.id WHERE s.user_id=? ORDER BY s.id DESC', (user_id,))
     rows = c.fetchall()
     conn.close()
     return rows

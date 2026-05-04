@@ -9,6 +9,11 @@
         Date : {{ s[2][:10] }}<br>
         Total : {{ s[3]|int }} FCFA<br>
         Paiement : {{ s[4] }}<br>
+        {% if s[4] == "partiel" and s[6] %}
+        Montant initial : {{ s[6]|int }} FCFA<br>
+        Avance versée : {{ (s[6] - s[7])|int }} FCFA<br>
+        Reste à payer : {{ s[7]|int }} FCFA<br>
+        {% endif %}
         {% if s[5] != "annulee" %}
         <a href="/ventes/{{ s[0] }}/confirmer-annulation" class="btn" style="background:#c0392b;display:inline-block;margin-top:4px;">❌ Annuler</a>
         {% else %}<span style="color:#c0392b;font-weight:bold;">⛔ Annulée</span>{% endif %}<br>
