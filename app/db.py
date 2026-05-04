@@ -231,6 +231,21 @@ def modifier_vente(session_id, client, mode):
     conn.commit()
     conn.close()
 
+
+def supprimer_dette_session(session_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('DELETE FROM credits WHERE session_id=?', (session_id,))
+    conn.commit()
+    conn.close()
+
+def mettre_a_jour_client_dette(session_id, nouveau_client):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('UPDATE credits SET client=? WHERE session_id=?', (nouveau_client, session_id))
+    conn.commit()
+    conn.close()
+
 def s_inscrire(nom, mdp):
     import hashlib
     conn = connecter()

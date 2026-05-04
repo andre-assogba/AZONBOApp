@@ -220,9 +220,26 @@ def modifier_vente_route(sid):
             return render_template('modifier_vente.html', sid=sid, s=session_data, produits=produits, quantites=quantites, erreur=resultat)
         client = resultat['client']
         mode = resultat['mode']
+        # Recuperer ancien mode AVANT modification
+        s_list = lister_sessions(uid())
+        old_session = next((x for x in s_list if x[0] == sid), None)
+        old_mode = old_session[4] if old_session else 'cash'
         modifier_vente(sid, client, mode)
         articles_form = [(int(k.split('_')[1]), int(v)) for k, v in request.form.items() if k.startswith('qte_') and v.strip() != '' and int(v) > 0]
         modifier_quantites_vente(sid, articles_form)
+        # Gestion dettes selon changement de mode
+        from db import supprimer_dette_session, mettre_a_jour_client_dette
+        if mode == 'cash':
+            supprimer_dette_session(sid)
+        elif old_mode == 'cash' and mode in ('credit', 'partiel'):
+            s_list2 = lister_sessions(uid())
+            new_s = next((x for x in s_list2 if x[0] == sid), None)
+            total = new_s[3] if new_s else 0
+            date = datetime.now().strftime('%d/%m/%Y %H:%M')
+            from db import ajouter_dette
+            ajouter_dette(uid(), sid, client, total, date, total, '')
+        else:
+            mettre_a_jour_client_dette(sid, client)
         return redirect(url_for('ventes'))
     s = lister_sessions(uid())
     session_data = next((x for x in s if x[0] == sid), None)
