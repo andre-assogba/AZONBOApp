@@ -9,11 +9,14 @@
         Date : {{ s[2][:10] }}<br>
         Total : {{ s[3]|int }} FCFA<br>
         Paiement : {{ s[4] }}<br>
-        <a href="/ventes/{{ s[0] }}/modifier">✏️ Modifier</a>
+        <a href="/ventes/{{ s[0] }}/modifier" class="btn" style="background:#e6a817;display:inline-block;margin-top:8px;">✏️ Modifier</a>
+        <form method="POST" action="/ventes/{{ s[0] }}/supprimer" style="display:inline;">
+            <button type="submit" class="btn" style="background:#c0392b;" onclick="return confirm('Supprimer cette vente ?')">🗑️ Supprimer</button>
+        </form>
     </div>
     {% endfor %}
 {% else %}
     <div class="card">Aucune vente enregistrée.</div>
 {% endif %}
-<a href="/" class="btn" style="background:#888;">🔙 Retour</a>
+<a href="/" class="btn" style="background:#888;"> 🔙 Retour</a>
 {% endblock %}

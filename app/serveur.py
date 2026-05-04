@@ -3,7 +3,7 @@
 # Andre Marc ASSOGBA
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from db import initialiser, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, lister_remboursements, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume, modifier_produit, supprimer_produit
+from db import initialiser, supprimer_vente, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, lister_remboursements, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume, modifier_produit, supprimer_produit
 from ventes import Vente
 from validation import valider_login, valider_inscription, valider_client, valider_paiement, valider_quantite_vente, valider_remboursement, valider_modification_vente
 from datetime import datetime
@@ -286,3 +286,9 @@ def historique_client_route():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/ventes/<int:sid>/supprimer', methods=['POST'])
+def supprimer_vente_route(sid):
+    from db import supprimer_vente
+    supprimer_vente(sid, uid())
+    return redirect(url_for('ventes'))

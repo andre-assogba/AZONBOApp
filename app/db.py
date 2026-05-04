@@ -319,3 +319,17 @@ def lister_remboursements(credit_id):
     rows = c.fetchall()
     conn.close()
     return rows
+
+def supprimer_vente(session_id, user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute("SELECT id FROM sessions WHERE id=? AND user_id=?", (session_id, user_id))
+    if not c.fetchone():
+        conn.close()
+        return False
+    c.execute("DELETE FROM ventes WHERE session_id=?", (session_id,))
+    c.execute("DELETE FROM credits WHERE session_id=?", (session_id,))
+    c.execute("DELETE FROM sessions WHERE id=?", (session_id,))
+    conn.commit()
+    conn.close()
+    return True
