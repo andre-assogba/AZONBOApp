@@ -17,5 +17,8 @@
   {% endfor %}
   <button type="submit">✅ Enregistrer</button>
 </form>
+{% if erreur %}<p style="color:red">{{ erreur }}</p>{% endif %}
+</form>
 <a href="/ventes">↩ Retour aux ventes</a>
+{% endblock %}
 {% endblock contenu %}
