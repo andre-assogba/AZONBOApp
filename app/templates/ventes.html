@@ -10,7 +10,6 @@
         Total : {{ s[3]|int }} FCFA<br>
         Paiement : {{ s[4] }}<br>
         {% if s[4] == "partiel" and s[6] %}
-        Montant initial : {{ s[6]|int }} FCFA<br>
         Avance versée : {{ (s[6] - s[7])|int }} FCFA<br>
         Reste à payer : {{ s[7]|int }} FCFA<br>
         {% endif %}
