@@ -69,6 +69,10 @@ def initialiser():
     )''')
 
     try:
+        c.execute("ALTER TABLE sessions ADD COLUMN statut TEXT DEFAULT 'active'")
+    except:
+        pass
+    try:
         c.execute("ALTER TABLE produits ADD COLUMN prix_achat REAL DEFAULT 0")
     except:
         pass
@@ -201,6 +205,10 @@ def enregistrer_remboursement(credit_id, montant):
     c.execute('UPDATE credits SET montant_restant=montant_restant-? WHERE id=?', (montant, credit_id))
     c.execute('UPDATE credits SET statut="solde" WHERE id=? AND montant_restant<=0', (credit_id,))
     try:
+        c.execute("ALTER TABLE sessions ADD COLUMN statut TEXT DEFAULT 'active'")
+    except:
+        pass
+    try:
         c.execute("ALTER TABLE produits ADD COLUMN prix_achat REAL DEFAULT 0")
     except:
         pass
@@ -330,6 +338,21 @@ def supprimer_vente(session_id, user_id):
     c.execute("DELETE FROM ventes WHERE session_id=?", (session_id,))
     c.execute("DELETE FROM credits WHERE session_id=?", (session_id,))
     c.execute("DELETE FROM sessions WHERE id=?", (session_id,))
+    conn.commit()
+    conn.close()
+    return True
+
+def annuler_vente(session_id, user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute("SELECT id FROM sessions WHERE id=? AND user_id=? AND statut='active'", (session_id, user_id))
+    if not c.fetchone():
+        conn.close()
+        return False
+    articles = c.execute("SELECT produit_id, quantite FROM ventes WHERE session_id=?", (session_id,)).fetchall()
+    for produit_id, qte in articles:
+        c.execute("UPDATE produits SET quantite=quantite+? WHERE id=?", (qte, produit_id))
+    c.execute("UPDATE sessions SET statut='annulee' WHERE id=?", (session_id,))
     conn.commit()
     conn.close()
     return True

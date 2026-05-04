@@ -9,6 +9,9 @@
         Date : {{ s[2][:10] }}<br>
         Total : {{ s[3]|int }} FCFA<br>
         Paiement : {{ s[4] }}<br>
+        {% if s[5] is not defined or s[5] != "annulee" %}
+        <a href="/ventes/{{ s[0] }}/confirmer-annulation" class="btn" style="background:#c0392b;display:inline-block;margin-top:4px;">❌ Annuler</a>
+        {% else %}<span style="color:#c0392b;font-weight:bold;">⛔ Annulée</span>{% endif %}<br>
         <a href="/ventes/{{ s[0] }}/modifier" class="btn" style="background:#e6a817;display:inline-block;margin-top:8px;">✏️ Modifier</a>
         <form method="POST" action="/ventes/{{ s[0] }}/supprimer" style="display:inline;">
             <button type="submit" class="btn" style="background:#c0392b;" onclick="return confirm('Supprimer cette vente ?')">🗑️ Supprimer</button>

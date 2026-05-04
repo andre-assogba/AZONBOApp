@@ -3,7 +3,7 @@
 # Andre Marc ASSOGBA
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from db import initialiser, supprimer_vente, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, lister_remboursements, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume, modifier_produit, supprimer_produit
+from db import initialiser, supprimer_vente, annuler_vente, get_articles_session, get_credit_session, get_produit, get_user_id, lister_produits, ajouter_produit, creer_session, ajouter_vente, lister_sessions, lister_dettes, get_dette, rechercher_dettes, enregistrer_remboursement, lister_remboursements, modifier_vente, modifier_quantites_vente, get_articles_session, verifier_utilisateur, get_resume, modifier_produit, supprimer_produit
 from ventes import Vente
 from validation import valider_login, valider_inscription, valider_client, valider_paiement, valider_quantite_vente, valider_remboursement, valider_modification_vente
 from datetime import datetime
@@ -291,4 +291,15 @@ if __name__ == '__main__':
 def supprimer_vente_route(sid):
     from db import supprimer_vente
     supprimer_vente(sid, uid())
+    return redirect(url_for('ventes'))
+
+@app.route('/ventes/<int:sid>/confirmer-annulation')
+def confirmer_annulation(sid):
+    s = lister_sessions(uid())
+    session_data = next((x for x in s if x[0] == sid), None)
+    return render_template('confirmer_annulation.html', sid=sid, s=session_data)
+
+@app.route('/ventes/<int:sid>/annuler', methods=['POST'])
+def annuler_vente_route(sid):
+    annuler_vente(sid, uid())
     return redirect(url_for('ventes'))
