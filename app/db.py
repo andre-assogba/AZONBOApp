@@ -371,3 +371,11 @@ def annuler_vente(session_id, user_id):
     conn.commit()
     conn.close()
     return True
+
+def get_stock_bas(user_id):
+    conn = connecter()
+    c = conn.cursor()
+    c.execute('SELECT nom,quantite,seuil FROM produits WHERE user_id=? AND quantite<=seuil ORDER BY quantite ASC', (user_id,))
+    rows = c.fetchall()
+    conn.close()
+    return rows

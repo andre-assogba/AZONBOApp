@@ -75,7 +75,8 @@ def menu():
     ventes = (ventes[0], int(ventes[1] or 0))
     dettes = (dettes[0], int(dettes[1] or 0))
     nom = session.get('utilisateur', '')
-    return render_template('menu.html', ventes=ventes, dettes=dettes, nom=nom, date=date)
+    stock_bas = get_stock_bas(uid())
+    return render_template('menu.html', ventes=ventes, dettes=dettes, nom=nom, date=date, stock_bas=stock_bas)
 
 @app.route('/produits')
 def produits():

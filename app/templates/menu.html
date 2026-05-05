@@ -18,6 +18,14 @@
   </div>
 </div>
 
+{% if stock_bas %}
+<div style="background:#fff8e1;border-left:4px solid #f39c12;border-radius:8px;padding:10px 12px;margin-bottom:12px;">
+  <div style="font-weight:bold;color:#e67e22;margin-bottom:6px;">⚠️ Stock bas ({{ stock_bas|length }} produit{{ 's' if stock_bas|length > 1 }})</div>
+  {% for p in stock_bas %}
+  <div style="font-size:13px;color:#555;padding:2px 0;">📦 {{ p[0] }} — {{ p[1] }} unité{{ 's' if p[1] > 1 }} (seuil : {{ p[2] }})</div>
+  {% endfor %}
+</div>
+{% endif %}
 <a href='/ventes' class='btn' style='font-size:20px;padding:20px;background:#1B6B2F;margin-bottom:15px;'>
   🛒 Ventes
 </a>
