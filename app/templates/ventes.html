@@ -14,12 +14,16 @@
         Reste à payer : {{ s[7]|int }} FCFA<br>
         {% endif %}
         {% if s[5] != "annulee" %}
-        <a href="/ventes/{{ s[0] }}/confirmer-annulation" class="btn" style="background:#c0392b;display:inline-block;margin-top:4px;">❌ Annuler</a>
-        {% else %}<span style="color:#c0392b;font-weight:bold;">⛔ Annulée</span>{% endif %}<br>
-        <a href="/ventes/{{ s[0] }}/modifier" class="btn" style="background:#e6a817;display:inline-block;margin-top:8px;">✏️ Modifier</a>
-        <form method="POST" action="/ventes/{{ s[0] }}/supprimer" style="display:inline;">
-            <button type="submit" class="btn" style="background:#c0392b;" onclick="return confirm('Supprimer cette vente ?')">🗑️ Supprimer</button>
-        </form>
+        <a href="/ventes/{{ s[0] }}/confirmer-annulation" style="display:block;text-align:center;margin-top:10px;padding:9px;background:#e67e22;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">🚫 Annuler la vente</a>
+        {% else %}
+        <div style="margin-top:8px;padding:7px 10px;background:#fdecea;border-left:4px solid #c0392b;border-radius:6px;color:#c0392b;font-weight:bold;">⛔ Annulée</div>
+        {% endif %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+          <a href="/ventes/{{ s[0] }}/modifier" style="text-align:center;padding:9px;background:#2980b9;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">✏️ Modifier</a>
+          <form method="POST" action="/ventes/{{ s[0] }}/supprimer">
+            <button type="submit" onclick="return confirm('Supprimer cette vente ?')" style="width:100%;padding:9px;background:#c0392b;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">🗑️ Supprimer</button>
+          </form>
+        </div>
     </div>
     {% endfor %}
 {% else %}
