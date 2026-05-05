@@ -17,7 +17,7 @@ Seuil: <input name="seuil" type="number"><br>
 {% if produits %}
 {% for p in produits %}
 <div class="card">
-<strong>[{{ p[0] }}] {{ p[1] }}</strong><br>
+<strong>[{{ loop.index }}] {{ p[1] }}</strong><br>
 Prix de vente : {{ p[2]|int }} FCFA<br>
 Prix d'achat : {{ p[5]|int if p[5] else 0 }} FCFA<br>
 Benefice : <strong>{{ (p[2] - (p[5] or 0))|int }} FCFA/unite</strong><br>
