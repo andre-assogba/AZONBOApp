@@ -20,9 +20,7 @@
         {% endif %}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
           <a href="/ventes/{{ s[0] }}/modifier" style="text-align:center;padding:9px;background:#2980b9;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">✏️ Modifier</a>
-          <form method="POST" action="/ventes/{{ s[0] }}/supprimer">
-            <button type="submit" onclick="return confirm('Supprimer cette vente ?')" style="width:100%;padding:9px;background:#c0392b;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">🗑️ Supprimer</button>
-          </form>
+          <a href="/ventes/{{ s[0] }}/confirmer-suppression" style="display:block;text-align:center;padding:9px;background:#c0392b;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">🗑️ Supprimer</a>
         </div>
     </div>
     {% endfor %}

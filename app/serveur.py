@@ -286,6 +286,14 @@ def modifier_produit_route(pid):
     modifier_produit(pid, resultat['nom'], resultat['prix'], prix_achat, resultat['qte'], resultat['seuil'])
     return redirect(url_for('produits'))
 
+@app.route('/produits/<int:pid>/confirmer-suppression')
+def confirmer_suppression_produit(pid):
+    return render_template('confirmer_suppression.html',
+        titre='Supprimer ce produit ?',
+        message='Cette action est irreversible. Le produit sera definitivement supprime.',
+        url_confirmer='/produits/' + str(pid) + '/supprimer',
+        url_annuler='/produits')
+
 @app.route('/produits/<int:pid>/supprimer', methods=['POST'])
 def supprimer_produit_route(pid):
     supprimer_produit(pid, uid())
@@ -330,6 +338,14 @@ def historique_client_route():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/ventes/<int:sid>/confirmer-suppression')
+def confirmer_suppression_vente(sid):
+    return render_template('confirmer_suppression.html',
+        titre='Supprimer cette vente ?',
+        message='Cette action est irreversible. La vente sera definitivement supprimee.',
+        url_confirmer='/ventes/' + str(sid) + '/supprimer',
+        url_annuler='/ventes')
 
 @app.route('/ventes/<int:sid>/supprimer', methods=['POST'])
 def supprimer_vente_route(sid):
