@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<div style='background:#1B6B2F;color:white;padding:12px 15px;margin:-15px -15px 15px;'>
+  <div style='font-size:13px;opacity:0.8;'>Bonjour, {{ nom }} 👋</div>
+  <div style='font-size:12px;opacity:0.7;'>{{ date }}</div>
+</div>
+
+<div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;'>
+  <div class='card' style='text-align:center;padding:12px;'>
+    <div style='font-size:11px;color:#666;'>🛒 Ventes aujourd'hui</div>
+    <div style='font-size:24px;font-weight:bold;color:#1B6B2F;'>{{ ventes[0] }}</div>
+    <div style='font-size:13px;color:#333;'>{{ ventes[1] }} FCFA</div>
+  </div>
+  <div class='card' style='text-align:center;padding:12px;'>
+    <div style='font-size:11px;color:#666;'>💰 Dettes en cours</div>
+    <div style='font-size:24px;font-weight:bold;color:#c0392b;'>{{ dettes[0] }}</div>
+    <div style='font-size:13px;color:#c0392b;'>{{ dettes[1] }} FCFA</div>
+  </div>
+</div>
+
+{% if stock_bas %}
+<div style="background:#fff8e1;border-left:4px solid #f39c12;border-radius:8px;padding:10px 12px;margin-bottom:12px;">
+  <div style="font-weight:bold;color:#e67e22;margin-bottom:6px;">⚠️ Stock bas ({{ stock_bas|length }} produit{{ 's' if stock_bas|length > 1 }})</div>
+  {% for p in stock_bas %}
+  <div style="font-size:13px;color:#555;padding:2px 0;">📦 {{ p[0] }} — {{ p[1] }} unité{{ 's' if p[1] > 1 }} (seuil : {{ p[2] }})</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% if session.get('vente_en_cours') %}
+<div style="background:#e8f5e9;border-left:4px solid #1B6B2F;border-radius:8px;padding:10px 12px;margin-bottom:12px;">
+  <div style="font-weight:bold;color:#1B6B2F;margin-bottom:6px;">🔄 Vente en cours — {{ session['vente_en_cours']['client'] }} ({{ session['vente_en_cours']['total']|int }} FCFA)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
+    <a href="/ventes/reprendre" style="text-align:center;padding:8px;background:#1B6B2F;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">▶️ Reprendre</a>
+    <a href="/ventes/abandonner" style="text-align:center;padding:8px;background:#c0392b;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">🗑️ Abandonner</a>
+  </div>
+</div>
+{% endif %}
+<a href='/ventes' class='btn' style='font-size:20px;padding:20px;background:#1B6B2F;margin-bottom:15px;'>
+  🛒 Ventes
+</a>
+
+<div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;'>
+  <a href='/produits' class='btn' style='background:#2980b9;'>📦 Produits</a>
+  <a href='/dettes' class='btn' style='background:#8e44ad;'>💳 Dettes</a>
+  <a href='/historique_client' class='btn' style='background:#16a085;'>👥 Clients</a>
+  <a href='/resume' class='btn' style='background:#d35400;'>📊 Rapports</a>
+</div>
+
+<a href='/logout' class='btn' style='background:#c0392b;margin-top:15px;'>🚪 Déconnexion</a>
+{% endblock %}

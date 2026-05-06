@@ -112,3 +112,20 @@ class Credit:
         print('--- DETTES SOLDEES ---')
         for r in rows:
             print(f'{r[0]} | {int(r[1])} FCFA | {r[2][:10]}')
+
+    @staticmethod
+    def rechercher():
+        nom = input('Nom du client : ')
+        conn = connecter()
+        c = conn.cursor()
+        c.execute(
+            'SELECT id, client, montant_initial, montant_restant FROM credits WHERE client LIKE ? AND statut = ?',
+            ('%' + nom + '%', 'en_cours')
+        )
+        rows = c.fetchall()
+        conn.close()
+        if not rows:
+            print('Aucune dette trouvee pour ce client.')
+            return
+        for r in rows:
+            print(f'[{r[0]}] {r[1]} | Initiale: {int(r[2])} FCFA | Reste: {int(r[3])} FCFA')

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>🔐 Connexion</h2>
+{% if request.args.get('inscrit') %}
+<div class='card' style='border-left:4px solid #2e7d32;background:#e8f5e9;'><p style='color:#2e7d32;margin:0;font-weight:bold;'>✅ Inscription reussie ! Connectez-vous.</p></div>
+{% endif %}
+{% if erreur %}
+<div class='card' style='border-left:4px solid #c0392b;background:#fdecea;'><p style='color:#c0392b;margin:0;font-weight:bold;'>⚠️ {{ erreur }}</p></div>
+{% endif %}
+<form method='POST'>
+<p>👤 <input type='text' name='nom' placeholder='Votre nom' required style='font-size:1.1em;padding:10px;width:80%;'></p>
+<p>🔒 <input type='password' name='mot_de_passe' placeholder='Votre mot de passe' required style='font-size:1.1em;padding:10px;width:80%;'></p>
+<button type='submit' class='btn'>Se connecter</button>
+</form>
+<p style="text-align:center;margin-top:10px">Pas de compte ? <a href="/inscription">S'inscrire</a></p>
+{% endblock %}

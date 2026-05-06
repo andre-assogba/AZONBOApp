@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenu %}
+<div class="card" style="text-align:center;">
+    <h2>❌ Annuler la vente ?</h2>
+    <p><strong>Facture N° {{ "%04d"|format(sid) }}</strong></p>
+    <p>Client : <strong>{{ s[1] }}</strong></p>
+    <p>Total : <strong>{{ s[3]|int }} FCFA</strong></p>
+    <p style="color:#c0392b;">Le stock sera restauré. La vente restera visible comme annulée.</p>
+    <form method="POST" action="/ventes/{{ sid }}/annuler">
+        <button type="submit" class="btn" style="background:#c0392b;">✅ Confirmer l annulation</button>
+    </form>
+    <a href="/facture/{{ sid }}" class="btn" style="background:#888;">↩ Retour</a>
+</div>
+{% endblock %}

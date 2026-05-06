@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block contenu %}
+<div class="card" style="text-align:center;">
+    <strong>AZONBOApp - RECU DE VENTE</strong><br>
+    Facture N&deg; : {{ "%04d"|format(sid) }}<br>
+    Date : {{ s[2] }}<br>
+    Client : {{ s[1] }}
+</div>
+{% for a in articles %}{% if a[1] > 0 %}
+<div class="card">{{ a[0] }} x{{ a[1] }} = {{ a[2]|int }} FCFA</div>
+{% endif %}{% endfor %}
+<div class="card">
+    <strong>TOTAL : {{ s[3]|int }} FCFA</strong><br>
+    Paiement : {{ s[4] }}<br>
+    {% if s[4] == "credit" or s[4] == "partiel" %}
+    {% if credit %}
+    Avance recue : {{ (credit[0] - credit[1])|int }} FCFA<br>
+    <span class="alerte">Reste a payer : {{ credit[1]|int }} FCFA</span>
+    {% endif %}
+    {% endif %}
+</div>
+{% if s[5] is not defined or s[5] != "annulee" %}
+<a href="/ventes/{{ sid }}/confirmer-annulation" class="btn" style="background:#c0392b;">❌ Annuler cette vente</a>
+{% else %}
+<div class="card" style="color:#c0392b;text-align:center;"><strong>⛔ Vente annulée</strong></div>
+{% endif %}
+<a href="/ventes/nouvelle" class="btn">+ Nouvelle vente</a>
+<a href="/" class="btn" style="background:#888;">Menu</a>
+{% endblock %}

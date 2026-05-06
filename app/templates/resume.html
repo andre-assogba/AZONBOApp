@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>📊 Résumé du jour</h2>
+<div class="card">
+    <strong>Date : {{ date }}</strong>
+</div>
+<div class="card">
+    🛒 Ventes du jour : <strong>{{ ventes[0] or 0 }}</strong><br>
+    Total encaissé : <strong>{{ ventes[1] or 0 }} FCFA</strong>
+</div>
+<div class="card">
+    💰 Dettes en cours : <strong>{{ dettes[0] or 0 }}</strong><br>
+    Total à récupérer : <strong class="alerte">{{ dettes[1] or 0 }} FCFA</strong>
+</div>
+<a href="/" class="btn" style="background:#888;">🔙 Retour</a>
+{% endblock %}

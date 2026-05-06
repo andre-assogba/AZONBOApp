@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>✏️ Modifier la vente #{{ sid }}</h2>
+{% if erreur %}<p style="color:red">{{ erreur }}</p>{% endif %}
+<form method="POST">
+  <p><label>Client :</label><br>
+  <input type="text" name="client" value="{{ s[1] }}" required></p>
+  <p><label>Mode de paiement :</label><br>
+  <select name="paiement">
+    <option value="cash" {% if s[4]=="cash" %}selected{% endif %}>Cash</option>
+    <option value="credit" {% if s[4]=="credit" %}selected{% endif %}>Credit</option>
+    <option value="partiel" {% if s[4]=="partiel" %}selected{% endif %}>Partiel</option>
+  </select></p>
+  <p><strong>Articles :</strong></p>
+  {% for p in produits %}
+  <p>{{ p[1] }} ({{ p[2] }} FCFA) :
+  <input type="number" name="qte_{{ p[0] }}" value="{{ quantites.get(p[0], 0) }}" min="0"></p>
+  {% endfor %}
+  <button type="submit" class="btn">✅ Enregistrer</button>
+</form>
+<a href="/ventes" class="btn" style="background:#888;">↩ Retour</a>
+{% endblock %}

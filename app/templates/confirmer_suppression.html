@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>⚠️ Confirmation</h2>
+<div class="card" style="text-align:center;padding:20px;">
+  <div style="font-size:40px;margin-bottom:10px;">🗑️</div>
+  <strong style="font-size:18px;">{{ titre }}</strong><br><br>
+  <p style="color:#666;">{{ message }}</p>
+</div>
+<form method="POST" action="{{ url_confirmer }}">
+  <button type="submit" style="width:100%;padding:14px;background:#c0392b;color:white;border:none;border-radius:8px;font-weight:bold;font-size:16px;cursor:pointer;margin-bottom:10px;">🗑️ Oui, supprimer</button>
+</form>
+<a href="{{ url_annuler }}" style="display:block;text-align:center;padding:14px;background:#888;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">↩️ Annuler</a>
+{% endblock %}

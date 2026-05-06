@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>🛒 Mes ventes</h2>
+<a href="/ventes/nouvelle" class="btn">+ Nouvelle vente</a>
+{% if sessions %}
+    {% for s in sessions %}
+    <div class="card">
+        <strong>[{{ loop.index }}] {{ s[1] }}</strong><br>
+        Date : {{ s[2][:10] }}<br>
+        Total : {{ s[3]|int }} FCFA<br>
+        Paiement : {{ s[4] }}<br>
+        {% if s[4] == "partiel" and s[6] %}
+        Avance versée : {{ (s[6] - s[7])|int }} FCFA<br>
+        Reste à payer : {{ s[7]|int }} FCFA<br>
+        {% endif %}
+        {% if s[5] != "annulee" %}
+        <a href="/ventes/{{ s[0] }}/confirmer-annulation" style="display:block;text-align:center;margin-top:10px;padding:9px;background:#e67e22;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">🚫 Annuler la vente</a>
+        {% else %}
+        <div style="margin-top:8px;padding:7px 10px;background:#fdecea;border-left:4px solid #c0392b;border-radius:6px;color:#c0392b;font-weight:bold;">⛔ Annulée</div>
+        {% endif %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+          <a href="/ventes/{{ s[0] }}/modifier" style="text-align:center;padding:9px;background:#2980b9;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">✏️ Modifier</a>
+          <a href="/ventes/{{ s[0] }}/confirmer-suppression" style="display:block;text-align:center;padding:9px;background:#c0392b;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">🗑️ Supprimer</a>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">Aucune vente enregistrée.</div>
+{% endif %}
+<a href="/" class="btn" style="background:#888;"> 🔙 Retour</a>
+{% endblock %}

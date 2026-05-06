@@ -1,0 +1,10 @@
+import sqlite3
+conn = sqlite3.connect('app/azonbo.db')
+c = conn.cursor()
+c.execute('DELETE FROM sessions')
+c.execute('DELETE FROM credits')
+c.execute('DELETE FROM remboursements')
+c.execute('DELETE FROM utilisateurs')
+conn.commit()
+conn.close()
+print('OK')

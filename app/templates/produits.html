@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>📦 Mes produits</h2>
+{% if erreur %}<p style="color:red;font-weight:bold;">{{ erreur }}</p>{% endif %}
+<button onclick="document.getElementById('f-ajout').style.display='block'" class="btn">+ Ajouter</button>
+<div id="f-ajout" style="display:none;padding:10px">
+<form action="/produits/ajouter" method="post">
+Nom: <input name="nom"><br>
+Prix de vente (FCFA): <input name="prix" type="number"><br>
+Prix d'achat (FCFA): <input name="prix_achat" type="number" value="0"><br>
+Quantite: <input name="quantite" type="number"><br>
+Seuil: <input name="seuil" type="number"><br>
+<button type="submit" class="btn">Enregistrer</button>
+<button type="button" onclick="document.getElementById('f-ajout').style.display='none'" class="btn" style="background:#888;">Annuler</button>
+</form>
+</div>
+{% if produits %}
+{% for p in produits %}
+<div class="card">
+<strong>[{{ loop.index }}] {{ p[1] }}</strong><br>
+Prix de vente : {{ p[2]|int }} FCFA<br>
+{% if p[5] and p[5] > 0 %}
+Prix d'achat : {{ p[5]|int }} FCFA<br>
+Benefice : <strong>{{ (p[2] - p[5])|int }} FCFA/unite</strong><br>
+{% else %}
+<span style="background:#e67e22;color:white;padding:2px 8px;border-radius:5px;font-size:0.85em;">⚠️ Prix d'achat non renseigné</span><br>
+{% endif %}
+Stock : {{ p[3] }}
+{% if p[3] == 0 %}<span class="alerte"> RUPTURE</span>
+{% elif p[3] <= p[4] %}<span class="alerte"> STOCK BAS</span>
+{% endif %}<br>
+Seuil : {{ p[4] }}<br><br>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+<button onclick="document.getElementById('mod-{{ p[0] }}').style.display='block'" style="padding:9px;background:#e6a817;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">✏️ Modifier</button>
+<a href="/produits/{{ p[0] }}/confirmer-suppression" style="display:block;text-align:center;padding:9px;background:#c0392b;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">🗑️ Supprimer</a>
+</div>
+<div id="mod-{{ p[0] }}" style="display:none;margin-top:8px;padding:8px;background:#f9f9f9;">
+<form action="/produits/{{ p[0] }}/modifier" method="post">
+Nom: <input name="nom" value="{{ p[1] }}"><br>
+Prix de vente: <input name="prix" type="number" value="{{ p[2]|int }}"><br>
+Prix d'achat: <input name="prix_achat" type="number" value="{{ p[5]|int if p[5] else 0 }}"><br>
+Quantite: <input name="quantite" type="number" value="{{ p[3] }}"><br>
+Seuil: <input name="seuil" type="number" value="{{ p[4] }}"><br>
+<button type="submit" class="btn">💾 Sauvegarder</button>
+<button type="button" onclick="document.getElementById('mod-{{ p[0] }}').style.display='none'" class="btn" style="background:#888;">Annuler</button>
+</form>
+</div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card">Aucun produit enregistre.</div>
+{% endif %}
+<a href="/" class="btn" style="background:#888;">← Retour</a>
+{% endblock %}

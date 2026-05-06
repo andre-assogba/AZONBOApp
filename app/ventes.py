@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*-
 from db import connecter
-from validation import saisir_texte, saisir_nombre
+
+from datetime import datetime
+
+# -*- coding: utf-8 -*-
+from db import connecter
+
 from datetime import datetime
 
 class Vente:
-    def __init__(self, client, date, articles, total, mode, avance):
+    def __init__(self, client, mode, date='', articles=None, total=0, avance=0):
         self.client = client
-        self.date = date
-        self.articles = articles
-        self.total = total
         self.mode = mode
+        self.date = date
+        self.articles = articles or []
+        self.total = total
         self.avance = avance
+        self.produits = []
 
+    def ajouter_produit(self, pid, nom, prix, qte):
+        sous_total = prix * qte
+        self.total += sous_total
+        self.produits.append({'id': pid, 'nom': nom, 'prix': prix, 'quantite': qte, 'total': sous_total})
     def afficher_facture(self, session_id):
         print('=' * 40)
         print('     AZONBOAPP - RECU DE VENTE')
@@ -52,10 +62,79 @@ class Vente:
             )
         conn.commit()
         conn.close()
-        print('Vente enregistrée !')
-        self.afficher_facture(session_id)
+        return session_id
         if self.mode in ('credit', 'partiel'):
             print(f'*** CREDIT : {int(self.total - self.avance)} FCFA à récupérer ***')
+
+
+    @staticmethod
+    def modifier():
+        from db import connecter
+        
+        conn = connecter()
+        c = conn.cursor()
+        c.execute('SELECT id,client,date,total,paiement FROM sessions ORDER BY id DESC LIMIT 10')
+        sessions = c.fetchall()
+        conn.close()
+        if not sessions:
+            print('Aucune vente enregistree.')
+            return
+        print('--- VENTES RECENTES ---')
+        for s in sessions:
+            print(f'[{s[0]}] {s[1]} | {int(s[3])} FCFA | {s[4]} | {s[2]}')
+        sid = saisir_nombre('ID de la vente : ', entier=True)
+        session = next((s for s in sessions if s[0] == sid), None)
+        if not session:
+            print('Vente introuvable.')
+            return
+        conn = connecter()
+        c = conn.cursor()
+        c.execute('SELECT v.id,p.nom,v.quantite,v.total,v.produit_id FROM ventes v JOIN produits p ON v.produit_id=p.id WHERE v.session_id=?',(sid,))
+        articles = c.fetchall()
+        conn.close()
+        print(f'Client: {session[1]} | Total: {int(session[3])} FCFA | {session[4]}')
+        for a in articles:
+            print(f'[{a[0]}] {a[1]} x{a[2]} = {int(a[3])} FCFA')
+        choix = saisir_menu('1.Modifier qte  2.Changer paiement  0.Retour : ',[0,1,2])
+        if choix == 0:
+            return
+        elif choix == 1:
+            aid = saisir_nombre('ID article : ', entier=True)
+            art = next((a for a in articles if a[0] == aid), None)
+            if not art:
+                print('Article introuvable.')
+                return
+            nouvelle_qte = saisir_nombre('Nouvelle quantite : ', entier=True)
+            prix_unit = art[3] / art[2]
+            nouveau_total = prix_unit * nouvelle_qte
+            diff_qte = art[2] - nouvelle_qte
+            conn = connecter()
+            c = conn.cursor()
+            c.execute('UPDATE ventes SET quantite=?,total=? WHERE id=?',(nouvelle_qte, nouveau_total, aid))
+            c.execute('UPDATE produits SET quantite=quantite+? WHERE id=?',(diff_qte, art[4]))
+            c.execute('UPDATE sessions SET total=(SELECT SUM(total) FROM ventes WHERE session_id=?) WHERE id=?',(sid,sid))
+            conn.commit()
+            conn.close()
+            print('Vente modifiee.')
+            conn2 = connecter()
+            c2 = conn2.cursor()
+            c2.execute('SELECT p.nom,v.quantite,v.total,v.produit_id FROM ventes v JOIN produits p ON v.produit_id=p.id WHERE v.session_id=?',(sid,))
+            arts = c2.fetchall()
+            c2.execute('SELECT total FROM sessions WHERE id=?',(sid,))
+            new_total = c2.fetchone()[0]
+            conn2.close()
+            v = Vente(session[1], session[2], arts, new_total, session[4], 0)
+            v.afficher_facture(sid)
+        elif choix == 2:
+            print('1.Cash  2.Credit  3.Partiel')
+            mode = saisir_menu('Nouveau paiement : ',[1,2,3])
+            modes = {1:'cash',2:'credit',3:'partiel'}
+            conn = connecter()
+            c = conn.cursor()
+            c.execute('UPDATE sessions SET paiement=? WHERE id=?',(modes[mode],sid))
+            conn.commit()
+            conn.close()
+            print('Paiement modifie.')
 
     @staticmethod
     def nouvelle():
@@ -72,7 +151,14 @@ class Vente:
         clients_connus = [r[0] for r in c2.fetchall()]
         if clients_connus:
             print('Clients connus : ' + ', '.join(clients_connus))
-        client = saisir_texte('Nom du client : ')
+        while True:
+            client = saisir_texte('Nom du client : ')
+            if client is None:
+                print('Vente annulee.')
+                return
+            if len(client) >= 2 and any(c.isalpha() for c in client):
+                break
+            print('Erreur : nom invalide, entrez un vrai nom.')
         date = datetime.now().strftime('%d/%m/%Y %H:%M')
         articles = []
         while True:
@@ -125,3 +211,23 @@ class Vente:
             avance = 0
         v = Vente(client, date, articles, total, mode, avance)
         v.sauvegarder()
+
+    @staticmethod
+    def historique_client():
+        nom = input('Nom du client : ')
+        conn = connecter()
+        c = conn.cursor()
+        c.execute(
+            'SELECT id, client, date, total, paiement FROM sessions WHERE client LIKE ? ORDER BY date DESC',
+            ('%' + nom + '%',)
+        )
+        rows = c.fetchall()
+        conn.close()
+        if not rows:
+            print('Aucune vente trouvee pour ce client.')
+            return
+        total_global = 0
+        for r in rows:
+            print(f'[{r[0]}] {r[1]} | {r[2][:10]} | {int(r[3])} FCFA | {r[4]}')
+            total_global += r[3]
+        print(f'TOTAL : {int(total_global)} FCFA ({len(rows)} ventes)')

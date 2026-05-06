@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Historique client</h2>
+<form method="POST">
+  <p><input type="text" name="nom" value="{{ nom }}" placeholder="Nom du client" required>
+  <button type="submit">🔍 Rechercher</button></p>
+</form>
+{% if nom and not resultats %}
+  <p>Aucune vente trouvée pour {{ nom }}.</p>
+{% endif %}
+{% if resultats %}
+  {% set vrai_nom = resultats.values()|list|first %}{% if vrai_nom %}<h3>Ventes de {{ vrai_nom.client if vrai_nom.client is defined else nom }}</h3>{% endif %}
+  {% for sid, v in resultats.items() %}
+    <p><strong>Vente #{{ sid }}</strong> — {{ v.date }} — {{ v.paiement }}{% if v.statut == "annulee" %} <span style="color:#c0392b;font-weight:bold;">⛔ Annulée</span>{% endif %}</p>
+    <ul>
+    {% for a in v.articles %}{% if a.qte > 0 %}
+      <li>{{ a.nom }} x{{ a.qte }} → {{ a.total|int }} FCFA</li>
+    {% endif %}{% endfor %}
+    </ul>
+    <p>Total : <strong>{{ v.total|int }} FCFA</strong></p>
+    <hr>
+  {% endfor %}
+{% endif %}
+<a href="/">↩ Retour au menu</a>
+{% endblock contenu %}

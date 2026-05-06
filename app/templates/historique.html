@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>📋 Historique ventes</h2>
+<form method="post">
+    <input name="nom" placeholder="Nom du client" value="{{ nom }}" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #ccc;font-size:16px;">
+    <button type="submit" class="btn">Rechercher</button>
+</form>
+{% if nom %}
+    {% if resultats %}
+        {% set total = namespace(val=0) %}
+        {% for r in resultats %}
+        <div class="card">
+            <strong>[{{ r[0] }}] {{ r[1] }}</strong><br>
+            Date : {{ r[2][:10] }}<br>
+            Total : {{ r[3]|int }} FCFA<br>
+            Paiement : {{ r[4] }}
+        </div>
+        {% set total.val = total.val + r[3] %}
+        {% endfor %}
+        <div class="card"><strong>TOTAL : {{ total.val|int }} FCFA ({{ resultats|length }} ventes)</strong></div>
+    {% else %}
+        <div class="card">Aucune vente trouvee pour ce client.</div>
+    {% endif %}
+{% endif %}
+<a href="/" class="btn" style="background:#888;">🔙 Retour</a>
+{% endblock %}
