@@ -110,7 +110,6 @@ def nouvelle_vente():
         ok_c, client = valider_client(request.form.get('client', ''))
         if not ok_c:
             return render_template('nouvelle_vente.html', produits=produits, erreur=client)
-        mode = request.form.get('paiement', 'cash')
         produits_sel = request.form.getlist('produit_id')
         quantites = request.form.getlist('quantite')
         articles_valides = []
@@ -122,28 +121,55 @@ def nouvelle_vente():
                 ok_q, qte = valider_quantite_vente(qte_str, p[3], p[1])
                 if not ok_q:
                     return render_template('nouvelle_vente.html', produits=produits, erreur=qte)
-                articles_valides.append((p, qte))
+                articles_valides.append({'pid': p[0], 'nom': p[1], 'prix': p[2], 'qte': qte, 'total': p[2]*qte})
         if not articles_valides:
             return render_template('nouvelle_vente.html', produits=produits, erreur='Selectionnez au moins un produit avec une quantite.')
-        total_tmp = sum(p[2] * q for p, q in articles_valides)
-        ok_p, avance = valider_paiement(mode, request.form.get('avance',''), total_tmp)
+        total = sum(a['total'] for a in articles_valides)
+        session['vente_en_cours'] = {
+            'client': client,
+            'telephone': request.form.get('telephone', ''),
+            'articles': articles_valides,
+            'total': total
+        }
+        return redirect(url_for('paiement_vente'))
+    return render_template('nouvelle_vente.html', produits=produits, erreur=None)
+
+@app.route('/ventes/paiement', methods=['GET', 'POST'])
+def paiement_vente():
+    if 'vente_en_cours' not in session:
+        return redirect(url_for('nouvelle_vente'))
+    ec = session['vente_en_cours']
+    if request.method == 'POST':
+        mode = request.form.get('paiement', 'cash')
+        ok_p, avance = valider_paiement(mode, request.form.get('avance', ''), ec['total'])
         if not ok_p:
-            return render_template('nouvelle_vente.html', produits=produits, erreur=avance)
-        v = Vente(client, mode)
-        for p, qte in articles_valides:
-            v.ajouter_produit(p[0], p[1], p[2], qte)
+            return render_template('paiement_vente.html', vente=ec, erreur=avance)
+        v = Vente(ec['client'], mode)
+        for art in ec['articles']:
+            v.ajouter_produit(art['pid'], art['nom'], art['prix'], art['qte'])
         date = datetime.now().strftime('%d/%m/%Y %H:%M')
         sid = creer_session(uid(), v.client, date, v.total, v.mode)
         for item in v.produits:
             ajouter_vente(sid, item['id'], item['quantite'], item['total'])
         if v.mode in ('credit', 'partiel'):
             from db import ajouter_dette
-            avance = int(request.form.get('avance') or 0)
-            reste = v.total - avance
-            ajouter_dette(uid(), sid, v.client, v.total, date, reste, request.form.get('telephone', ''))
+            avance_val = int(request.form.get('avance') or 0)
+            reste = v.total - avance_val
+            ajouter_dette(uid(), sid, v.client, v.total, date, reste, ec.get('telephone', ''))
+        session.pop('vente_en_cours', None)
         return redirect(url_for('facture', sid=sid))
-    return render_template('nouvelle_vente.html', produits=produits, erreur=None)
+    return render_template('paiement_vente.html', vente=ec, erreur=None)
 
+@app.route('/ventes/reprendre')
+def reprendre_vente():
+    if 'vente_en_cours' in session:
+        return redirect(url_for('paiement_vente'))
+    return redirect(url_for('nouvelle_vente'))
+
+@app.route('/ventes/abandonner')
+def abandonner_vente():
+    session.pop('vente_en_cours', None)
+    return redirect(url_for('ventes'))
 @app.route('/resume')
 def resume():
     date = datetime.now().strftime('%d/%m/%Y')

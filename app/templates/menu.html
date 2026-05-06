@@ -26,6 +26,15 @@
   {% endfor %}
 </div>
 {% endif %}
+{% if session.get('vente_en_cours') %}
+<div style="background:#e8f5e9;border-left:4px solid #1B6B2F;border-radius:8px;padding:10px 12px;margin-bottom:12px;">
+  <div style="font-weight:bold;color:#1B6B2F;margin-bottom:6px;">🔄 Vente en cours — {{ session['vente_en_cours']['client'] }} ({{ session['vente_en_cours']['total']|int }} FCFA)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
+    <a href="/ventes/reprendre" style="text-align:center;padding:8px;background:#1B6B2F;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">▶️ Reprendre</a>
+    <a href="/ventes/abandonner" style="text-align:center;padding:8px;background:#c0392b;color:white;border-radius:8px;font-weight:bold;text-decoration:none;">🗑️ Abandonner</a>
+  </div>
+</div>
+{% endif %}
 <a href='/ventes' class='btn' style='font-size:20px;padding:20px;background:#1B6B2F;margin-bottom:15px;'>
   🛒 Ventes
 </a>

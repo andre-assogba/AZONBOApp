@@ -20,19 +20,8 @@
     <div class="card" style="text-align:center;">
         <strong>TOTAL : <span id="total">0</span> FCFA</strong>
     </div>
-    <div class="card">
-        <label>Paiement</label><br>
-        <select name="paiement" id="mode" onchange="toggleAvance()" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
-            <option value="cash">Cash</option>
-            <option value="credit">Credit</option>
-            <option value="partiel">Partiel</option>
-        </select>
-    </div>
-    <div class="card" id="avance_div" style="display:none;">
-        <label>Avance reçue (FCFA)</label><br>
-        <input name="avance" type="number" placeholder="0" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
-    </div>
-    <button type="submit" class="btn">Enregistrer la vente</button>
+<button type="submit" class="btn">Continuer →</button>
+
 </form>
 <a href="/ventes" class="btn" style="background:#888;">🔙 Retour</a>
 <script>
@@ -45,9 +34,6 @@ function calculerTotal(){
     });
     document.getElementById('total').textContent = Math.round(total);
 }
-function toggleAvance(){
-    var m = document.getElementById('mode').value;
-    document.getElementById('avance_div').style.display = m === 'partiel' ? 'block' : 'none';
-}
+
 </script>
 {% endblock %}
